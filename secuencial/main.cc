@@ -10,11 +10,8 @@ using namespace clasificador_de_distribuciones::componentes_compartidos;
 using namespace clasificador_de_distribuciones::secuencial::implementacion;
 using namespace std;
 
-const int Distribucion::tamano_frecuencias_ = 40;
-
 
 int main (int argc, char** argv) {
-
     if (argc != 3) {
         printf("uso: ./clasificador_de_distribuciones_secuencial archivo_entrada archivo_salida");
         return 0;
@@ -65,7 +62,7 @@ int main (int argc, char** argv) {
         break;
     }
 
-    Distribucion promedio;
+    unique_ptr<Distribucion> promedio;
     unique_ptr<map<int,Distribucion> > ciudadanos;
 
     stat = analizador_de_datos.AgruparYPromediar(*validaciones,
@@ -92,7 +89,7 @@ int main (int argc, char** argv) {
         break;
     }
 
-    stat = analizador_de_datos.CompararDistribuciones(ciudadanos, promedio);
+    stat = analizador_de_datos.CompararDistribuciones(ciudadanos, *promedio);
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
         ciudadanos, la única memoria que necesitan todos los hilos

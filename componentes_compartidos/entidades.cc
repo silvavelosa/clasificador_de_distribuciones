@@ -9,6 +9,8 @@ namespace clasificador_de_distribuciones
 {
 namespace componentes_compartidos
 {
+const int Distribucion::tamano_frecuencias_ = 40;
+
 double Distribucion::Diferencia (const Distribucion& a) const {
     double diff = 0;
     for(int i=0;
@@ -29,6 +31,7 @@ double Distribucion::Diferencia (const Distribucion& a) const {
             aResto += a.FrecuenciaRelativa(i);
     }
     diff += pow(miResto - aResto, 2);
+    diff/= min(frecuencias_.size(), a.frecuencias_.size());
     return diff;
 }
 

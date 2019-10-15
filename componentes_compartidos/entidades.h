@@ -1,6 +1,7 @@
 #ifndef CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 #define CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -33,6 +34,28 @@ class Validacion
     static int Parse (const std::string& linea,
             char separador,
             Validacion& validacion);
+    const bool operator < (const Validacion& a) const
+    {
+        return  id_ciudadano_<a.id_ciudadano_ ||
+            (id_ciudadano_ == a.id_ciudadano_ && score_ < a.score_);
+    }
+    const bool operator == (const Validacion& a) const
+    {
+        return  id_ciudadano_== a.id_ciudadano_ &&
+            dia_             == a.dia_          &&
+            id_dedo_         == a.id_dedo_      &&
+            score_           == a.score_        &&
+            calidad_         == a.calidad_;
+    }
+
+    friend std::ostream &operator<<( std::ostream& output, const Validacion &a ) {
+     output << "idCiudadano: "<< a.id_ciudadano_
+            <<" dia: " << a.dia_
+            << " idDedo: "<<a.id_dedo_
+            << " score: "<<a.score_
+            << " calidad: "<<a.calidad_;
+     return output;
+    }
 };
 
 class Distribucion
@@ -44,10 +67,7 @@ class Distribucion
     double diferencia_;
     Distribucion ()
     {
-        if(tamano_frecuencias_ == 0)
-            frecuencias_.resize(40);
-        else
-            frecuencias_.resize(tamano_frecuencias_);
+        frecuencias_.resize(tamano_frecuencias_);
         total_ = 0;
         diferencia_ = 0;
     }

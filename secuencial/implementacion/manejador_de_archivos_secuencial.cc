@@ -81,17 +81,25 @@ int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
 
 int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
         const map<int,Distribucion>& ciudadanos,
-        string& msg) {
+        string& msg,
+        IManejadorDeArchivos::ModoDeEscritura modo) {
 
 
     int tamano = TamanoDeArchivo(archivo);
 
-    if(tamano > 0)
+    if(tamano > 0 && modo == ModoDeEscritura::mantener)
     {
+        msg = "El archivo ya existe";
         return -2;
     }
 
-    std::ofstream salida (archivo, std::ios::out | std::ios::trunc );
+    std::ios::openmode modo_archivo = std::ios::out;
+    if(modo == ModoDeEscritura::concatenar)
+        modo_archivo |= std::ios::app;
+    else
+        modo_archivo |= std::ios::trunc;
+    std::ofstream salida (archivo, modo_archivo);
+
     if(!salida.is_open())
     {
         return -1;
@@ -108,16 +116,22 @@ int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
 
 int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
         const vector<map<int,Distribucion>::iterator>& indice,
-        string& msg) {
+        string& msg,
+        IManejadorDeArchivos::ModoDeEscritura modo) {
 
     int tamano = TamanoDeArchivo(archivo);
 
-    if(tamano > 0)
+    if(tamano > 0 && modo == ModoDeEscritura::mantener)
     {
+        msg = "El archivo ya existe";
         return -2;
     }
-
-    std::ofstream salida (archivo, std::ios::out);
+    std::ios::openmode modo_archivo = std::ios::out;
+    if(modo == ModoDeEscritura::concatenar)
+        modo_archivo |= std::ios::app;
+    else
+        modo_archivo |= std::ios::trunc;
+    std::ofstream salida (archivo, modo_archivo);
     if(!salida.is_open())
     {
         return -1;
@@ -139,7 +153,6 @@ int ManejadorDeArchivosSecuencial::TamanoDeArchivo(const string& archivo)
     {
         return -1;
     }
-
     std::streampos ini = entrada.tellg();
     entrada.seekg (0, std::ios::end);
     std::streampos fin = entrada.tellg();

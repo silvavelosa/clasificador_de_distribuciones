@@ -23,9 +23,9 @@ class AnalizadorDeDatosSecuencial: public IAnalizadorDeDatos
             std::unique_ptr<std::vector<Validacion> >& validaciones);
 
     int AgruparYPromediar(
-            const std::vector<Validacion>& valideaciones,
+            const std::vector<Validacion>& validaciones,
             std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
-            Distribucion& promedio);
+            std::unique_ptr<Distribucion>& promedio);
 
     int CompararDistribuciones(
             const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
@@ -33,7 +33,8 @@ class AnalizadorDeDatosSecuencial: public IAnalizadorDeDatos
 
     int OrdenarDistribuciones(
             const std::map<int,Distribucion>& ciudadanos,
-            std::unique_ptr<std::vector<std::map<int,Distribucion>::iterator> >& indice);
+            std::unique_ptr<
+                std::vector<std::map<int,Distribucion>::iterator> >& indice);
 };
 } // namespace implementacion
 } // namespace secuencial

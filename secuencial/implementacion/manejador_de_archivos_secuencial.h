@@ -25,16 +25,19 @@ class ManejadorDeArchivosSecuencial: public IManejadorDeArchivos
 
     int GenerarSalida( const std::string& archivo,
             const std::map<int,Distribucion>& ciudadano,
-            std::string& msg);
+            std::string& msg,
+            IManejadorDeArchivos::ModoDeEscritura modo
+                = IManejadorDeArchivos::ModoDeEscritura::mantener);
 
     int GenerarSalida( const std::string& archivo,
             const std::vector<std::map<int,Distribucion>::iterator>& indice,
-            std::string& msg);
+            std::string& msg,
+            IManejadorDeArchivos::ModoDeEscritura modo
+                = IManejadorDeArchivos::ModoDeEscritura::mantener);
 
  private:
     int TamanoDeArchivo (const std::string& archivo);
 };
-
 } // namespace implementacion
 } // namespace secuencial
 } // namespace clasificador_de_distribuciones

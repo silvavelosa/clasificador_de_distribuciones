@@ -63,12 +63,11 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="test/entradaPruebaNOK.csv">
+		<Unit filename="test/analizador_de_datos_secuencial_test.cc">
 			<Option target="Test" />
 		</Unit>
-		<Unit filename="test/entradaPruebaOK.csv">
-			<Option target="Test" />
-		</Unit>
+		<Unit filename="test/data/entradaPruebaNOK.csv" />
+		<Unit filename="test/data/entradaPruebaOK.csv" />
 		<Unit filename="test/main_test.cc">
 			<Option target="Test" />
 		</Unit>
