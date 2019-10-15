@@ -1,15 +1,15 @@
-#ifndef CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_INTERFACES_H_
-#define CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_INTERFACES_H_
+#ifndef CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_INTERFACES_H_
+#define CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_INTERFACES_H_
 
 #include <map>
 #include <memory>
 #include <vector>
 
-#include "definiciones_compartidas/entidades.h"
+#include "componentes_compartidos/entidades.h"
 
 namespace clasificador_de_distribuciones
 {
-namespace definiciones_compartidas
+namespace componentes_compartidos
 {
 class IManejadorDeArchivos
 {
@@ -47,6 +47,6 @@ class IAnalizadorDeDatos
             const std::map<int,Distribucion>& ciudadanos,
             std::unique_ptr<std::vector<std::map<int,Distribucion>::iterator> >& indice) = 0;
 };
-} // namespace definiciones_compartidas
+} // namespace componentes_compartidos
 } // namespace clasificador_de_versiones
-#endif // CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_INTERFACES_H_
+#endif // CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_INTERFACES_H_

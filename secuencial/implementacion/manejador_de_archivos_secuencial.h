@@ -5,12 +5,12 @@
 #include <memory>
 #include <vector>
 
-#include "definiciones_compartidas/entidades.h"
-#include "definiciones_compartidas/interfaces.h"
+#include "componentes_compartidos/entidades.h"
+#include "componentes_compartidos/interfaces.h"
 
 namespace clasificador_de_distribuciones
 {
-using namespace definiciones_compartidas;
+using namespace componentes_compartidos;
 namespace secuencial
 {
 namespace implementacion

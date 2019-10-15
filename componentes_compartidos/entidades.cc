@@ -1,4 +1,4 @@
-#include "definiciones_compartidas/entidades.h"
+#include "componentes_compartidos/entidades.h"
 
 #include <algorithm>
 #include <cmath>
@@ -7,7 +7,7 @@ using namespace std;
 
 namespace clasificador_de_distribuciones
 {
-namespace definiciones_compartidas
+namespace componentes_compartidos
 {
 double Distribucion::Diferencia (const Distribucion& a) const {
     double diff = 0;
@@ -98,6 +98,6 @@ int Validacion::Parse (const string& linea,
 int Validacion::Parse (const string& linea, Validacion& validacion) {
     return Parse(linea, ';', validacion);
 }
-} // namespace definiciones_compartidas
+} // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones
 

@@ -1,12 +1,12 @@
-#ifndef CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_ENTIDADES_H_
-#define CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_ENTIDADES_H_
+#ifndef CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
+#define CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 
 #include <string>
 #include <vector>
 
 namespace clasificador_de_distribuciones
 {
-namespace definiciones_compartidas
+namespace componentes_compartidos
 {
 class Validacion
 {
@@ -58,7 +58,7 @@ class Distribucion
     double Diferencia (const Distribucion& a) const;
 };
 
-} // namespace definiciones_compartidas
+} // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones
 
-#endif // CLASIFICADOR_DE_DISTRIBUCIONES_DEFINICIONES_COMPARTIDAS_ENTIDADES_H_
+#endif // CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_

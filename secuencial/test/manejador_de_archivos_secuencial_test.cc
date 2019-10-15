@@ -3,6 +3,7 @@
 #include <vector>
 #include <UnitTest++.h>
 
+#include "componentes_compartidos/entidades.h"
 #include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 
 using std::string;
@@ -13,7 +14,7 @@ using clasificador_de_distribuciones::secuencial::implementacion::ManejadorDeArc
 
 namespace clasificador_de_distribuciones
 {
-using namespace definiciones_compartidas;
+using namespace componentes_compartidos;
 namespace secuencial
 {
 namespace test

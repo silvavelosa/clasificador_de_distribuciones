@@ -2,11 +2,11 @@
 #include <memory>
 #include <vector>
 
-#include "definiciones_compartidas/entidades.h"
+#include "componentes_compartidos/entidades.h"
 #include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 #include "secuencial/implementacion/analizador_de_datos_secuencial.h"
 
-using namespace clasificador_de_distribuciones::definiciones_compartidas;
+using namespace clasificador_de_distribuciones::componentes_compartidos;
 using namespace clasificador_de_distribuciones::secuencial::implementacion;
 using namespace std;
 

@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1570516500 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\implementacion\analizador_de_datos_secuencial.cc
+1571153418 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\implementacion\analizador_de_datos_secuencial.cc
 	"secuencial/implementacion/analizador_de_datos_secuencial.h"
 	<cstdlib>
 	<fstream>
 	<sstream>
 
-1570516475 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\secuencial\implementacion\analizador_de_datos_secuencial.h
+1571154127 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\secuencial\implementacion\analizador_de_datos_secuencial.h
 	<map>
 	<memory>
 	<vector>
-	"definiciones_compartidas/entidades.h"
-	"definiciones_compartidas/interfaces.h"
+	"componentes_compartidos/entidades.h"
+	"componentes_compartidos/interfaces.h"
 
 1570516219 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\definiciones_compartidas\entidades.h
 	<string>
@@ -22,28 +22,28 @@
 	<vector>
 	"definiciones_compartidas/entidades.h"
 
-1570516461 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\implementacion\manejador_de_archivos_secuencial.cc
+1571153418 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\implementacion\manejador_de_archivos_secuencial.cc
 	"secuencial/implementacion/manejador_de_archivos_secuencial.h"
 	<fstream>
 	<iostream>
 	<sstream>
 
-1570516431 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\secuencial\implementacion\manejador_de_archivos_secuencial.h
+1571154165 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\secuencial\implementacion\manejador_de_archivos_secuencial.h
 	<map>
 	<memory>
 	<vector>
-	"definiciones_compartidas/entidades.h"
-	"definiciones_compartidas/interfaces.h"
+	"componentes_compartidos/entidades.h"
+	"componentes_compartidos/interfaces.h"
 
-1570516354 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\main.cc
+1571154208 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\main.cc
 	<iostream>
 	<memory>
 	<vector>
-	"definiciones_compartidas/entidades.h"
+	"componentes_compartidos/entidades.h"
 	"secuencial/implementacion/manejador_de_archivos_secuencial.h"
 	"secuencial/implementacion/analizador_de_datos_secuencial.h"
 
-1570428370 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\test\main_test.cc
+1571153418 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\test\main_test.cc
 	<UnitTest++.h>
 
 1570516400 source:c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\secuencial\test\manejador_de_archivos_secuencial_test.cc
@@ -52,4 +52,14 @@
 	<vector>
 	<UnitTest++.h>
 	"secuencial/implementacion/manejador_de_archivos_secuencial.h"
+
+1571154028 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\componentes_compartidos\entidades.h
+	<string>
+	<vector>
+
+1571154082 c:\users\silva\documents\programacion\distribuida\clasificador_de_distribuciones\\componentes_compartidos\interfaces.h
+	<map>
+	<memory>
+	<vector>
+	"componentes_compartidos/entidades.h"
 

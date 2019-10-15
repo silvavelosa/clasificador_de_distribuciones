@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="definiciones_compartidas/definiciones_compartidas.cbp" />
+		<Project filename="componentes_compartidos/componentes_compartidos.cbp" />
 		<Project filename="secuencial/secuencial.cbp">
-			<Depends filename="definiciones_compartidas/definiciones_compartidas.cbp" />
+			<Depends filename="componentes_compartidos/componentes_compartidos.cbp" />
 		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

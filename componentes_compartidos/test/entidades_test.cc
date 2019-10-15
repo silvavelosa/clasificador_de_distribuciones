@@ -1,13 +1,13 @@
 #include <string>
 #include <UnitTest++.h>
 
-#include "definiciones_compartidas/entidades.h"
+#include "componentes_compartidos/entidades.h"
 
 using std::string;
 
 namespace clasificador_de_distribuciones
 {
-namespace definiciones_compartidas
+namespace componentes_compartidos
 {
 namespace test
 {
@@ -182,7 +182,7 @@ SUITE(Validacion)
     }
 }
 } // namespace test
-} // namespace definiciones_compartidas
+} // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones
 
 int main (void)
