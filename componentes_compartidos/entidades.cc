@@ -13,7 +13,7 @@ const int Distribucion::tamano_frecuencias_ = 40;
 
 double Distribucion::Diferencia (const Distribucion& a) const {
     double diff = 0;
-    for(int i=0;
+    for(unsigned int i=0;
             i+1 < min(frecuencias_.size(), a.frecuencias_.size());
             i++)
     {
@@ -21,7 +21,7 @@ double Distribucion::Diferencia (const Distribucion& a) const {
     }
     double miResto=0, aResto=0;
 
-    for(int i=min(frecuencias_.size(), a.frecuencias_.size())-1;
+    for(unsigned int i=min(frecuencias_.size(), a.frecuencias_.size())-1;
             i < max(frecuencias_.size(), a.frecuencias_.size());
             i++)
     {
@@ -39,7 +39,7 @@ int Validacion::Parse (const string& linea,
         char separador,
         Validacion& validacion)
 {
-    int i=0;
+    unsigned int i=0;
     int seccion = 0;
     for(seccion = 0; seccion < 5 && i < linea.size(); seccion++)
     {

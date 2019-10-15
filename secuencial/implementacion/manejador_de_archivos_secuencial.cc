@@ -115,7 +115,7 @@ int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
 }
 
 int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
-        const vector<map<int,Distribucion>::iterator>& indice,
+        const vector<map<int,Distribucion>::const_iterator>& indice,
         string& msg,
         IManejadorDeArchivos::ModoDeEscritura modo) {
 
@@ -137,7 +137,7 @@ int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
         return -1;
     }
 
-    for(int i = 0; i< indice.size(); i++)
+    for(unsigned int i = 0; i< indice.size(); i++)
     {
         salida<<indice[i]->first<<";"<<indice[i]->second.diferencia_<<std::endl;
     }

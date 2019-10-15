@@ -107,7 +107,7 @@ int main (int argc, char** argv) {
         break;
     }
 
-    unique_ptr<vector<map<int,Distribucion>::iterator> > indice;
+    unique_ptr<vector<map<int,Distribucion>::const_iterator> > indice;
 
     stat = analizador_de_datos.OrdenarDistribuciones(*ciudadanos, indice);
     /*  +++

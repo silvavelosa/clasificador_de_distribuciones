@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <gsl/gsl_multifit.h>
 
 namespace clasificador_de_distribuciones
 {
@@ -30,7 +31,7 @@ int AnalizadorDeDatosSecuencial::AgruparYPromediar(
     promedio.reset(new Distribucion());
     ciudadanos.reset(new map<int,Distribucion> ());
     map<int,Distribucion>::iterator actual = ciudadanos->end();
-    for(int i=0;i<validaciones.size();i++)
+    for(unsigned int i=0;i<validaciones.size();i++)
     {
         if(actual == ciudadanos->end()
                 || actual->first != validaciones[i].id_ciudadano_)
@@ -57,13 +58,34 @@ int AnalizadorDeDatosSecuencial::AgruparYPromediar(
 int AnalizadorDeDatosSecuencial::CompararDistribuciones(
         const unique_ptr<map<int,Distribucion> >& ciudadanos,
         const Distribucion& promedio) {
+    for(unsigned int i=0;i<ciudadanos->size();i++)
+    {
+        ciudadanos->at(i).diferencia_ = ciudadanos->at(i).Diferencia(promedio);
+    }
+    return 0;
+}
+
+
+int AnalizadorDeDatosSecuencial::RegresionLineal(
+            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos) {
     return -3;
+}
+
+bool OrdenarPorResiduo (map<int,Distribucion>::const_iterator a,
+                        map<int,Distribucion>::const_iterator b) {
+    return (a->second.residuo_ < b-> second.residuo_);
 }
 
 int AnalizadorDeDatosSecuencial::OrdenarDistribuciones(
         const map<int,Distribucion>& ciudadanos,
-        unique_ptr<vector<map<int,Distribucion>::iterator> >& indice) {
-    return -3;
+        unique_ptr<vector<map<int,Distribucion>::const_iterator> >& indice) {
+    indice.reset(new vector<map<int,Distribucion>::const_iterator>() );
+    for(map<int,Distribucion>::const_iterator it = ciudadanos.begin();
+                it!= ciudadanos.end();
+                it++)
+        indice->push_back(it);
+    sort(indice->begin(),indice->end(),OrdenarPorResiduo);
+    return 0;
 }
 
 } // namespace implementacion

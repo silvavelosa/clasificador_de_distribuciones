@@ -27,7 +27,7 @@ SUITE(ManejadorDeArchivosSecuencialTest)
             ifstream lectura (archivo);
             REQUIRE CHECK(lectura.is_open());
             string linea;
-            for(int i=0;i<esperado.size();i++)
+            for(unsigned int i=0;i<esperado.size();i++)
             {
                 CHECK(getline(lectura, linea));
                 CHECK_EQUAL(esperado[i],linea);
@@ -114,7 +114,7 @@ SUITE(ManejadorDeArchivosSecuencialTest)
         ciudadanos[1].diferencia_ = 1.2;
         ciudadanos[7].diferencia_ = 0.5;
         ciudadanos[3].diferencia_ = 0.003;
-        vector<map<int,Distribucion>::iterator> indice;
+        vector<map<int,Distribucion>::const_iterator> indice;
         indice.push_back(ciudadanos.find(1));
         indice.push_back(ciudadanos.find(7));
         indice.push_back(ciudadanos.find(3));

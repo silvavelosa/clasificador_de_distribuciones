@@ -65,11 +65,13 @@ class Distribucion
     std::vector<int> frecuencias_;
     int total_;
     double diferencia_;
+    double residuo_;
     Distribucion ()
     {
         frecuencias_.resize(tamano_frecuencias_);
         total_ = 0;
         diferencia_ = 0;
+        residuo_ = 0;
     }
     double FrecuenciaRelativa (int i) const
     {

@@ -30,7 +30,7 @@ class ManejadorDeArchivosSecuencial: public IManejadorDeArchivos
                 = IManejadorDeArchivos::ModoDeEscritura::mantener);
 
     int GenerarSalida( const std::string& archivo,
-            const std::vector<std::map<int,Distribucion>::iterator>& indice,
+            const std::vector<std::map<int,Distribucion>::const_iterator>& indice,
             std::string& msg,
             IManejadorDeArchivos::ModoDeEscritura modo
                 = IManejadorDeArchivos::ModoDeEscritura::mantener);

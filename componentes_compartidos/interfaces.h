@@ -29,7 +29,7 @@ class IManejadorDeArchivos
             ModoDeEscritura modo = ModoDeEscritura::mantener) = 0;
 
     virtual int GenerarSalida( const std::string& archivo,
-            const std::vector<std::map<int,Distribucion>::iterator>& indice,
+            const std::vector<std::map<int,Distribucion>::const_iterator>& indice,
             std::string& msg,
             ModoDeEscritura modo = ModoDeEscritura::mantener) = 0;
 };
@@ -50,10 +50,13 @@ class IAnalizadorDeDatos
             const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
             const Distribucion& promedio) = 0;
 
+    virtual int RegresionLineal(
+            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos);
+
     virtual int OrdenarDistribuciones(
             const std::map<int,Distribucion>& ciudadanos,
             std::unique_ptr<
-                std::vector<std::map<int,Distribucion>::iterator> >& indice) = 0;
+                std::vector<std::map<int,Distribucion>::const_iterator> >& indice) = 0;
 };
 } // namespace componentes_compartidos
 } // namespace clasificador_de_versiones

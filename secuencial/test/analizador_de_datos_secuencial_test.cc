@@ -115,13 +115,34 @@ SUITE(AnalizadorDeDatosSecuencialTest)
         vector<int> total_esperado ={8,4,1,13};
         for(int i=0;i<3;i++)
         {
-            CHECK_ARRAY_EQUAL(esperados[i],it->second.frecuencias_, Distribucion::tamano_frecuencias_);
+            CHECK_ARRAY_EQUAL(esperados[i],it->second.frecuencias_,
+                               Distribucion::tamano_frecuencias_);
             CHECK_EQUAL(total_esperado[i], it->second.total_);
             it++;
         }
-        CHECK_ARRAY_EQUAL(esperados[3],promedio->frecuencias_,Distribucion::tamano_frecuencias_);
+        CHECK_ARRAY_EQUAL(esperados[3],promedio->frecuencias_,
+                          Distribucion::tamano_frecuencias_);
         CHECK_EQUAL(total_esperado[3], promedio->total_);
 
+    }
+
+    TEST(OrdenarDistribuciones)
+    {
+        map<int,Distribucion> ciudadanos;
+        unique_ptr<vector<map<int,Distribucion>::const_iterator> > indice;
+        Distribucion dist;
+        dist.residuo_ = 0.05;
+        ciudadanos[1] = dist;
+        dist.residuo_ = 0.0001;
+        ciudadanos[2] = dist;
+        dist.residuo_ = 0.3;
+        ciudadanos[3] = dist;
+        AnalizadorDeDatosSecuencial analizador;
+        analizador.OrdenarDistribuciones(ciudadanos,indice);
+        CHECK_EQUAL(3U,indice->size());
+        CHECK_EQUAL(2,(*indice)[0]->first);
+        CHECK_EQUAL(1,(*indice)[1]->first);
+        CHECK_EQUAL(3,(*indice)[2]->first);
     }
 }
 } // namespace test

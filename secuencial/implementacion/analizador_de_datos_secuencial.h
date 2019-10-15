@@ -31,10 +31,13 @@ class AnalizadorDeDatosSecuencial: public IAnalizadorDeDatos
             const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
             const Distribucion& promedio);
 
+    int RegresionLineal(
+            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos);
+
     int OrdenarDistribuciones(
             const std::map<int,Distribucion>& ciudadanos,
             std::unique_ptr<
-                std::vector<std::map<int,Distribucion>::iterator> >& indice);
+                std::vector<std::map<int,Distribucion>::const_iterator> >& indice);
 };
 } // namespace implementacion
 } // namespace secuencial
