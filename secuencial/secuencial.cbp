@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/huellas_falsas_secuencial" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/clasificador_de_distribuciones_secuencial" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -15,11 +15,11 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="../definiciones_compartidas/bin/Debug/definiciones_compartidas.a" />
+					<Add library="../componentes_compartidos/bin/Debug/componentes_compartidos.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/huellas_falsas_secuencial" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/clasificador_de_distribuciones_secuencial" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -28,11 +28,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="../definiciones_compartidas/bin/Release/definiciones_compartidas.a" />
+					<Add library="../componentes_compartidos/bin/Release/componentes_compartidos.a" />
 				</Linker>
 			</Target>
 			<Target title="Test">
-				<Option output="bin/Test/huellas_falsas_secuencial_test" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Test/clasificador_de_distribuciones_secuencial_test" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -41,7 +41,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="../definiciones_compartidas/bin/Release/definiciones_compartidas.a" />
+					<Add library="../componentes_compartidos/bin/Release/componentes_compartidos.a" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$exe_output" />
