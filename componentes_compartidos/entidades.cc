@@ -35,31 +35,22 @@ double Distribucion::Diferencia (const Distribucion& a) const {
     return diff;
 }
 
-int Validacion::Parse (const string& linea,
+int Evento::Parse (const string& linea,
         char separador,
-        Validacion& validacion)
+        Evento& evento)
 {
     unsigned int i=0;
     int seccion = 0;
-    for(seccion = 0; seccion < 5 && i < linea.size(); seccion++)
+    for(seccion = 0; seccion < 2 && i < linea.size(); seccion++)
     {
 
         switch(seccion)
         {
         case 0:
-            validacion.id_ciudadano_ = atoi(linea.c_str() + i);
+            evento.id_grupo_ = atoi(linea.c_str() + i);
             break;
         case 1:
-            validacion.dia_ = atoi(linea.c_str() + i);
-            break;
-        case 2:
-            validacion.id_dedo_ = atoi(linea.c_str() + i);
-            break;
-        case 3:
-            validacion.score_ = atoi(linea.c_str() + i);
-            break;
-        case 4:
-            validacion.calidad_ = atoi(linea.c_str() + i);
+            evento.valor_ = atoi(linea.c_str() + i);
             break;
         }
         for(; i<linea.size() && linea[i] == ' '; i++);
@@ -70,7 +61,7 @@ int Validacion::Parse (const string& linea,
         for(; i<linea.size() && linea[i]!= separador && linea[i] != '\n'; i++)
         {
             if((linea[i] < '0' || linea[i] > '9') && linea[i] != ' ')
-                return Validacion::ParseResult::CaracterInvalido;
+                return Evento::ParseResult::CaracterInvalido;
         }
 
         if(linea[i]=='\n')
@@ -79,10 +70,10 @@ int Validacion::Parse (const string& linea,
         if(i<linea.size())
             i++;
     }
-    if(seccion == 4)
-        return Validacion::ParseResult::CalidadVacio;
-    if(seccion < 4)
-        return Validacion::ParseResult::LineaIncompleta;
+    if(seccion == 1)
+        return Evento::ParseResult::ValorVacio;
+    if(seccion < 1)
+        return Evento::ParseResult::LineaIncompleta;
 
     if(i<linea.size() && separador == ' ')
     {
@@ -93,13 +84,13 @@ int Validacion::Parse (const string& linea,
     }
     if(i<linea.size())
     {
-        return Validacion::ParseResult::DatosSobrantes;
+        return Evento::ParseResult::DatosSobrantes;
     }
-    return Validacion::ParseResult::OK;
+    return Evento::ParseResult::OK;
 }
 
-int Validacion::Parse (const string& linea, Validacion& validacion) {
-    return Parse(linea, ';', validacion);
+int Evento::Parse (const string& linea, Evento& evento) {
+    return Parse(linea, ';', evento);
 }
 } // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones

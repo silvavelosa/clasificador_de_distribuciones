@@ -17,219 +17,169 @@ namespace componentes_compartidos
 {
 namespace test
 {
-SUITE(ValidacionTest)
+SUITE(EventoTest)
 {
     TEST(Mayor)
     {
-        Validacion a,b;
-        a.id_ciudadano_ = 123456;
-        a.score_ = 123;
-        b.id_ciudadano_ = 12345;
-        b.score_ = 125;
+        Evento a,b;
+        a.id_grupo_ = 123456;
+        a.valor_ = 123;
+        b.id_grupo_ = 12345;
+        b.valor_ = 125;
         CHECK_EQUAL(true, b<a);
         CHECK_EQUAL(false, a<b);
 
-        b.id_ciudadano_ = 123456;
+        b.id_grupo_ = 123456;
         CHECK_EQUAL(true, a<b);
         CHECK_EQUAL(false, b<a);
 
-        b.score_ = 123;
+        b.valor_ = 123;
         CHECK_EQUAL(false, a<b);
         CHECK_EQUAL(false, b<a);
     }
 
     TEST (Igual)
     {
-        Validacion a,b;
-        a.id_ciudadano_ = b.id_ciudadano_ = 123456;
-        a.dia_ = b.dia_ = 1000;
-        a.id_dedo_ = b.id_dedo_ = 7;
-        a.score_ = b.score_ = 126;
-        a.calidad_ = b.calidad_ = 157;
+        Evento a,b;
+        a.id_grupo_ = b.id_grupo_ = 123456;
+        a.valor_ = b.valor_ = 157;
         CHECK(a==b);
-        b.id_ciudadano_++;
+        b.id_grupo_++;
         CHECK(a!=b);
 
     }
     TEST(Salida)
     {
-        Validacion a;
-        a.id_ciudadano_  = 123456;
-        a.dia_  = 1000;
-        a.id_dedo_  = 7;
-        a.score_  = 126;
-        a.calidad_  = 157;
+        Evento a;
+        a.id_grupo_  = 123456;
+        a.valor_  = 1000;
         stringstream salida;
         salida<<a;
-        CHECK_EQUAL("idCiudadano: 123456 dia: 1000 idDedo: 7 score: 126 calidad: 157",salida.str());
+        CHECK_EQUAL("idGrupo: 123456 valor: 1000",salida.str());
 
     }
     TEST(ParseExitoso)
     {
-        string linea = "123456789;1200;2;147;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = "123456789;1200";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseSeparadorPersonalizadoExitoso)
     {
-        string linea = "123456789,1200,2,147,124";
-        Validacion res;
-        int est = Validacion::Parse(linea, ',',res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = "123456789,1200";
+        Evento res;
+        int est = Evento::Parse(linea, ',',res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseSaltoLinea)
     {
-        string linea = "123456789;1200;2;147;124\n";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = "123456789;1200\n";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseEspacios)
     {
-        string linea = "   123456789  ;  1200 ; 2;147 ;124 \n";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = "   123456789  ;  1200  \n";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseSeparadorEspacioMultiple)
     {
-        string linea = " 123456789   1200 2  147 124 \n";
-        Validacion res;
-        int est = Validacion::Parse(linea, ' ',res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = " 123456789   1200 \n";
+        Evento res;
+        int est = Evento::Parse(linea, ' ',res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseSeparadorEspacio)
     {
-        string linea = "123456789 1200 2 147 124 ";
-        Validacion res;
-        int est = Validacion::Parse(linea, ' ',res);
-        REQUIRE CHECK_EQUAL(Validacion::ParseResult::OK, est);
-        CHECK (res.id_ciudadano_ == 123456789 &&
-               res.dia_ == 1200 &&
-               res.id_dedo_ == 2 &&
-               res.score_ == 147 &&
-               res.calidad_ == 124);
+        string linea = "123456789 1200 ";
+        Evento res;
+        int est = Evento::Parse(linea, ' ',res);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK (res.id_grupo_ == 123456789 &&
+               res.valor_ == 1200);
     }
 
     TEST(ParseDatosInvalidos)
     {
-        string linea = "123456789;1da1;3;134;da";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::CaracterInvalido, est);
+        string linea = "123456789;1da1";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::CaracterInvalido, est);
     }
 
-    TEST(ParseIdCiudadanoVacio)
+    TEST(ParseIdGrupoVacio)
     {
-        string linea = ";1200;2;147;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::IdCiudadanoVacio, est);
+        string linea = ";1200";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::IdGrupoVacio, est);
     }
 
-    TEST(ParseIdCiudadanoEspacio)
+    TEST(ParseIdGrupoEspacio)
     {
-        string linea = " ;1200;2;147;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::IdCiudadanoVacio, est);
+        string linea = " ;1200";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::IdGrupoVacio, est);
     }
 
-    TEST(ParseDiaVacio)
+    TEST(ParseValorVacio)
     {
-        string linea = "123456789;;2;147;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::DiaVacio, est);
+        string linea = "123456789;";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::ValorVacio, est);
     }
 
-    TEST(ParseIdDedoVacio)
+    TEST(ParseValorEspacio)
     {
-        string linea = "123456789;1200;;147;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::IdDedoVacio, est);
+        string linea = "123456789; ";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::ValorVacio, est);
     }
 
-
-    TEST(ParseScoreVacio)
+    TEST(ParseValorSaltoLinea)
     {
-        string linea = "123456789;1200;2;;124";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::ScoreVacio, est);
-    }
-
-
-    TEST(ParseCalidadVacio)
-    {
-        string linea = "123456789;1200;2;147;";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::CalidadVacio, est);
-    }
-
-    TEST(ParseCalidadEspacio)
-    {
-        string linea = "123456789;1200;2;147; ";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::CalidadVacio, est);
-    }
-
-    TEST(ParseCalidadSaltoLinea)
-    {
-        string linea = "123456789;1200;2;147; \n";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::CalidadVacio, est);
+        string linea = "123456789; \n";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::ValorVacio, est);
     }
 
     TEST(ParseCadenaIncompleta)
     {
-        string linea = "123456789;12";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::LineaIncompleta, est);
+        string linea = "";
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::LineaIncompleta, est);
     }
 
     TEST(ParseCadenaMuyLarga)
     {
         string linea = "123456789;1200;2;147;124;vnsvklala";
-        Validacion res;
-        int est = Validacion::Parse(linea,res);
-        CHECK_EQUAL(Validacion::ParseResult::DatosSobrantes, est);
+        Evento res;
+        int est = Evento::Parse(linea,res);
+        CHECK_EQUAL(Evento::ParseResult::DatosSobrantes, est);
     }
 }
 SUITE (DistribucionTest)

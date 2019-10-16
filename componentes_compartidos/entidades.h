@@ -9,51 +9,38 @@ namespace clasificador_de_distribuciones
 {
 namespace componentes_compartidos
 {
-class Validacion
+class Evento
 {
  public:
     enum ParseResult
     {
         OK = 0,
-        IdCiudadanoVacio = -1,
-        DiaVacio = -2,
-        IdDedoVacio = -3,
-        ScoreVacio = -4,
-        CalidadVacio = -5,
-        CaracterInvalido = -6,
-        LineaIncompleta = -7,
-        DatosSobrantes = -8
+        IdGrupoVacio = -1,
+        ValorVacio = -2,
+        CaracterInvalido = -3,
+        LineaIncompleta = -4,
+        DatosSobrantes = -5
     };
-    int id_ciudadano_;
-    int dia_;
-    int id_dedo_;
-    int score_;
-    int calidad_;
+    int id_grupo_;
+    int valor_;
     static int Parse (const std::string& linea,
-            Validacion& validacion);
+            Evento& evento);
     static int Parse (const std::string& linea,
             char separador,
-            Validacion& validacion);
-    const bool operator < (const Validacion& a) const
+            Evento& evento);
+    const bool operator < (const Evento& a) const
     {
-        return  id_ciudadano_<a.id_ciudadano_ ||
-            (id_ciudadano_ == a.id_ciudadano_ && score_ < a.score_);
+        return  id_grupo_<a.id_grupo_ ||
+            (id_grupo_ == a.id_grupo_ && valor_ < a.valor_);
     }
-    const bool operator == (const Validacion& a) const
+    const bool operator == (const Evento& a) const
     {
-        return  id_ciudadano_== a.id_ciudadano_ &&
-            dia_             == a.dia_          &&
-            id_dedo_         == a.id_dedo_      &&
-            score_           == a.score_        &&
-            calidad_         == a.calidad_;
+        return  id_grupo_ == a.id_grupo_ && valor_ == a.valor_;
     }
 
-    friend std::ostream &operator<<( std::ostream& output, const Validacion &a ) {
-     output << "idCiudadano: "<< a.id_ciudadano_
-            <<" dia: " << a.dia_
-            << " idDedo: "<<a.id_dedo_
-            << " score: "<<a.score_
-            << " calidad: "<<a.calidad_;
+    friend std::ostream &operator<<( std::ostream& output, const Evento &a ) {
+     output << "idGrupo: "<< a.id_grupo_
+            <<" valor: " << a.valor_;
      return output;
     }
 };

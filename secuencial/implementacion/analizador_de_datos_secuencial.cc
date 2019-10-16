@@ -18,36 +18,36 @@ using std::string;
 using std::unique_ptr;
 using std::vector;
 
-int AnalizadorDeDatosSecuencial::OrdenarValidaciones(
-        unique_ptr<vector<Validacion> >& validaciones) {
-    sort(validaciones->begin(), validaciones->end());
+int AnalizadorDeDatosSecuencial::OrdenarEventos(
+        unique_ptr<vector<Evento> >& eventos) {
+    sort(eventos->begin(), eventos->end());
     return 0;
 }
 
 int AnalizadorDeDatosSecuencial::AgruparYPromediar(
-        const vector<Validacion>& validaciones,
+        const vector<Evento>& eventos,
         unique_ptr<map<int,Distribucion> >& ciudadanos,
         unique_ptr<Distribucion>& promedio) {
     promedio.reset(new Distribucion());
     ciudadanos.reset(new map<int,Distribucion> ());
     map<int,Distribucion>::iterator actual = ciudadanos->end();
-    for(unsigned int i=0;i<validaciones.size();i++)
+    for(unsigned int i=0;i<eventos.size();i++)
     {
         if(actual == ciudadanos->end()
-                || actual->first != validaciones[i].id_ciudadano_)
+                || actual->first != eventos[i].id_grupo_)
         {
             actual = ciudadanos->emplace_hint(ciudadanos->end(),
-                                      validaciones[i].id_ciudadano_,Distribucion());
+                                      eventos[i].id_grupo_,Distribucion());
         }
-        if(Distribucion::tamano_frecuencias_ <= validaciones[i].score_/10)
+        if(Distribucion::tamano_frecuencias_ <= eventos[i].valor_/10)
         {
             actual->second.frecuencias_[Distribucion::tamano_frecuencias_-1]++;
             promedio->frecuencias_[Distribucion::tamano_frecuencias_-1]++;
         }
         else
         {
-            actual->second.frecuencias_[validaciones[i].score_/10]++;
-            promedio->frecuencias_[validaciones[i].score_/10]++;
+            actual->second.frecuencias_[eventos[i].valor_/10]++;
+            promedio->frecuencias_[eventos[i].valor_/10]++;
         }
         actual->second.total_++;
         promedio->total_++;
@@ -68,7 +68,8 @@ int AnalizadorDeDatosSecuencial::CompararDistribuciones(
 
 int AnalizadorDeDatosSecuencial::RegresionLineal(
             const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos) {
-    return -3;
+
+  return -3;
 }
 
 bool OrdenarPorResiduo (map<int,Distribucion>::const_iterator a,
@@ -87,7 +88,6 @@ int AnalizadorDeDatosSecuencial::OrdenarDistribuciones(
     sort(indice->begin(),indice->end(),OrdenarPorResiduo);
     return 0;
 }
-
 } // namespace implementacion
 } // namespace secuencial
 } // namespace clasificador_de_distribuciones

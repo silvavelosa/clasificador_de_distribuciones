@@ -20,7 +20,7 @@ class IManejadorDeArchivos
      mantener
     };
     virtual int CargarDatos( const std::string& archivo,
-            std::unique_ptr<std::vector<Validacion> >& validaciones,
+            std::unique_ptr<std::vector<Evento> >& eventos,
             std::string& msg) = 0;
 
     virtual int GenerarSalida( const std::string& archivo,
@@ -38,11 +38,11 @@ class IManejadorDeArchivos
 class IAnalizadorDeDatos
 {
  public:
-    virtual int OrdenarValidaciones(
-            std::unique_ptr<std::vector<Validacion> >& validaciones) = 0;
+    virtual int OrdenarEventos(
+            std::unique_ptr<std::vector<Evento> >& eventos) = 0;
 
     virtual int AgruparYPromediar(
-            const std::vector<Validacion>& valideaciones,
+            const std::vector<Evento>& eventos,
             std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
             std::unique_ptr<Distribucion>& promedio) = 0;
 

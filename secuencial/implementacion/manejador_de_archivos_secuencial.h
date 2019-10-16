@@ -20,7 +20,7 @@ class ManejadorDeArchivosSecuencial: public IManejadorDeArchivos
 {
  public:
     int CargarDatos( const std::string& archivo,
-            std::unique_ptr<std::vector<Validacion> >& validaciones,
+            std::unique_ptr<std::vector<Evento> >& eventos,
             std::string& msg);
 
     int GenerarSalida( const std::string& archivo,

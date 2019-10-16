@@ -16,66 +16,57 @@ using std::unique_ptr;
 using std::vector;
 
 int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
-        unique_ptr<vector<Validacion> >& validaciones,
+        unique_ptr<vector<Evento> >& eventos,
         string& msg) {
     string linea;
 
     int tamano = TamanoDeArchivo(archivo);
 
-    Validacion actual;
-    validaciones.reset(new vector<Validacion>);
-    validaciones->reserve(tamano/10);
+    Evento actual;
+    eventos.reset(new vector<Evento>);
+    eventos->reserve(tamano/5);
 
 
     std::ifstream entrada(archivo);
     if(!entrada.is_open() || tamano <= 0)
     {
-        validaciones.reset(nullptr);
+        eventos.reset(nullptr);
         return -1;
     }
 
     for(int i=1;getline(entrada, linea);i++)
     {
-        int est = Validacion::Parse(linea, actual);
-        if(est == Validacion::ParseResult::OK)
-            validaciones->push_back(actual);
+        int est = Evento::Parse(linea, actual);
+        if(est == Evento::ParseResult::OK)
+            eventos->push_back(actual);
         else
         {
             std::stringstream ss;
             switch(est)
             {
-            case Validacion::ParseResult::IdCiudadanoVacio:
-                ss<<"IdCiudadano vacio en la linea "<<i;
+            case Evento::ParseResult::IdGrupoVacio:
+                ss<<"IdGrupo vacio en la linea "<<i;
                 break;
-            case Validacion::ParseResult::DiaVacio:
-                ss<<"Dia vacio en la linea "<<i;
+            case Evento::ParseResult::ValorVacio:
+                ss<<"Valor vacio en la linea "<<i;
                 break;
-            case Validacion::ParseResult::IdDedoVacio:
-                ss<<"IdDedo vacio en la linea "<<i;
-                break;
-            case Validacion::ParseResult::ScoreVacio:
-                ss<<"Score vacio en la linea "<<i;
-                break;
-            case Validacion::ParseResult::CalidadVacio:
-                ss<<"Calidad vacio en la linea "<<i;
-                break;
-            case Validacion::ParseResult::CaracterInvalido:
+            case Evento::ParseResult::CaracterInvalido:
                 ss<<"Caracter invalido en la linea "<<i;
                 break;
-            case Validacion::ParseResult::LineaIncompleta:
+            case Evento::ParseResult::LineaIncompleta:
                 ss<<"Linea incompleta "<<i;
                 break;
-            case Validacion::ParseResult::DatosSobrantes:
+            case Evento::ParseResult::DatosSobrantes:
                 ss<<"Datos sobrantes en la linea "<<i;
                 break;
             }
-            validaciones.reset(nullptr);
+            eventos.reset(nullptr);
             msg = ss.str();
             return -2;
         }
     }
     entrada.close();
-    validaciones->shrink_to_fit();
+    eventos->shrink_to_fit();
     return 0;
 }
 

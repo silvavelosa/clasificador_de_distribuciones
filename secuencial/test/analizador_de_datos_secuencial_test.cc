@@ -19,81 +19,81 @@ namespace test
 {
 SUITE(AnalizadorDeDatosSecuencialTest)
 {
-    TEST(OrdenarValidaciones)
+    TEST(OrdenarEventos)
     {
-        unique_ptr<vector<Validacion> > validaciones(new vector<Validacion>());
-        Validacion aux;
-        aux.id_ciudadano_ = 123456;
-        aux.score_ = 123;
-        validaciones->push_back(aux);
-        aux.id_ciudadano_ = 1234;
-        aux.score_ = 256;
-        validaciones->push_back(aux);
-        aux.id_ciudadano_ = 12345678;
-        aux.score_ = 0;
-        validaciones->push_back(aux);
-        aux.id_ciudadano_ = 123456;
-        aux.score_ = 127;
-        validaciones->push_back(aux);
+        unique_ptr<vector<Evento> > eventos(new vector<Evento>());
+        Evento aux;
+        aux.id_grupo_ = 123456;
+        aux.valor_ = 123;
+        eventos->push_back(aux);
+        aux.id_grupo_ = 1234;
+        aux.valor_ = 256;
+        eventos->push_back(aux);
+        aux.id_grupo_ = 12345678;
+        aux.valor_ = 0;
+        eventos->push_back(aux);
+        aux.id_grupo_ = 123456;
+        aux.valor_ = 127;
+        eventos->push_back(aux);
 
 
         AnalizadorDeDatosSecuencial analizador;
-        CHECK_EQUAL(0,analizador.OrdenarValidaciones(validaciones));
+        CHECK_EQUAL(0,analizador.OrdenarEventos(eventos));
 
-        vector<Validacion> esperado;
-        aux.id_ciudadano_ = 1234;
-        aux.score_ = 256;
+        vector<Evento> esperado;
+        aux.id_grupo_ = 1234;
+        aux.valor_ = 256;
         esperado.push_back(aux);
-        aux.id_ciudadano_ = 123456;
-        aux.score_ = 123;
+        aux.id_grupo_ = 123456;
+        aux.valor_ = 123;
         esperado.push_back(aux);
-        aux.id_ciudadano_ = 123456;
-        aux.score_ = 127;
+        aux.id_grupo_ = 123456;
+        aux.valor_ = 127;
         esperado.push_back(aux);
-        aux.id_ciudadano_ = 12345678;
-        aux.score_ = 0;
+        aux.id_grupo_ = 12345678;
+        aux.valor_ = 0;
         esperado.push_back(aux);
 
-        CHECK_ARRAY_EQUAL(esperado, *validaciones, esperado.size());
+        CHECK_ARRAY_EQUAL(esperado, *eventos, esperado.size());
     }
     TEST(AgruparYPromediar)
     {
-        vector<Validacion> validaciones;
-        Validacion aux;
-        aux.id_ciudadano_ = 1234;
-        aux.score_ = 0;
-        validaciones.push_back(aux);
-        aux.score_ = 123;
-        validaciones.push_back(aux);
-        aux.score_ = 127;
-        validaciones.push_back(aux);
-        aux.score_ = 129;
-        validaciones.push_back(aux);
-        aux.score_ = 200;
-        validaciones.push_back(aux);
-        aux.score_ = 390;
-        validaciones.push_back(aux);
-        aux.score_ = 500;
-        validaciones.push_back(aux);
-        aux.score_ = 800;
-        validaciones.push_back(aux);
-        aux.id_ciudadano_ = 123456;
-        aux.score_ = 100;
-        validaciones.push_back(aux);
-        aux.score_ = 200;
-        validaciones.push_back(aux);
-        aux.score_ = 256;
-        validaciones.push_back(aux);
-        aux.score_ = 300;
-        validaciones.push_back(aux);
-        aux.id_ciudadano_ = 12345678;
-        aux.score_ = 0;
-        validaciones.push_back(aux);
+        vector<Evento> eventos;
+        Evento aux;
+        aux.id_grupo_ = 1234;
+        aux.valor_ = 0;
+        eventos.push_back(aux);
+        aux.valor_ = 123;
+        eventos.push_back(aux);
+        aux.valor_ = 127;
+        eventos.push_back(aux);
+        aux.valor_ = 129;
+        eventos.push_back(aux);
+        aux.valor_ = 200;
+        eventos.push_back(aux);
+        aux.valor_ = 390;
+        eventos.push_back(aux);
+        aux.valor_ = 500;
+        eventos.push_back(aux);
+        aux.valor_ = 800;
+        eventos.push_back(aux);
+        aux.id_grupo_ = 123456;
+        aux.valor_ = 100;
+        eventos.push_back(aux);
+        aux.valor_ = 200;
+        eventos.push_back(aux);
+        aux.valor_ = 256;
+        eventos.push_back(aux);
+        aux.valor_ = 300;
+        eventos.push_back(aux);
+        aux.id_grupo_ = 12345678;
+        aux.valor_ = 0;
+        eventos.push_back(aux);
 
         AnalizadorDeDatosSecuencial analizador;
         unique_ptr<map<int,Distribucion> > ciudadanos;
         unique_ptr<Distribucion> promedio;
-        int est = analizador.AgruparYPromediar(validaciones, ciudadanos, promedio);
+        int est = analizador.AgruparYPromediar(eventos, ciudadanos, promedio);
         CHECK_EQUAL(0,est);
         map<int,Distribucion>::iterator it = ciudadanos->begin();
         vector<int> esperados[] = {{1,0,0,0,0,0,0,0,0,0,

@@ -39,20 +39,20 @@ SUITE(ManejadorDeArchivosSecuencialTest)
     {
         string archivo = "test/data/entradaPruebaOK.csv";
         ManejadorDeArchivosSecuencial manejador;
-        unique_ptr<vector<Validacion> > validaciones;
+        unique_ptr<vector<Evento> > eventos;
         string msg;
-        int res = manejador.CargarDatos(archivo,validaciones,msg);
+        int res = manejador.CargarDatos(archivo,eventos,msg);
         REQUIRE CHECK_EQUAL(0,res);
-        CHECK(validaciones->size() == 3);
+        CHECK(eventos->size() == 3);
     }
 
     TEST(CargarDatosNOK)
     {
         string archivo = "test/data/entradaPruebaNOK.csv";
         ManejadorDeArchivosSecuencial manejador;
-        unique_ptr<vector<Validacion> > validaciones;
+        unique_ptr<vector<Evento> > eventos;
         string msg;
-        int res = manejador.CargarDatos(archivo,validaciones,msg);
+        int res = manejador.CargarDatos(archivo,eventos,msg);
         CHECK_EQUAL(-2,res);
         CHECK_EQUAL("Caracter invalido en la linea 4", msg);
     }
@@ -61,9 +61,9 @@ SUITE(ManejadorDeArchivosSecuencialTest)
     {
         string archivo = "test/data/archivoQueNoExiste.csv";
         ManejadorDeArchivosSecuencial manejador;
-        unique_ptr<vector<Validacion> > validaciones;
+        unique_ptr<vector<Evento> > eventos;
         string msg;
-        int res = manejador.CargarDatos(archivo,validaciones,msg);
+        int res = manejador.CargarDatos(archivo,eventos,msg);
         CHECK_EQUAL(-1,res);
     }
 

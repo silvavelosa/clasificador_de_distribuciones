@@ -19,11 +19,11 @@ namespace implementacion
 class AnalizadorDeDatosSecuencial: public IAnalizadorDeDatos
 {
  public:
-    int OrdenarValidaciones(
-            std::unique_ptr<std::vector<Validacion> >& validaciones);
+    int OrdenarEventos(
+            std::unique_ptr<std::vector<Evento> >& eventos);
 
     int AgruparYPromediar(
-            const std::vector<Validacion>& validaciones,
+            const std::vector<Evento>& eventos,
             std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
             std::unique_ptr<Distribucion>& promedio);
 

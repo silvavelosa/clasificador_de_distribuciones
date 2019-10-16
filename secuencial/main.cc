@@ -19,12 +19,12 @@ int main (int argc, char** argv) {
 
     int stat= 0;
     string msg;
-    unique_ptr<vector<Validacion> > validaciones;
+    unique_ptr<vector<Evento> > eventos;
     string archivo_entrada = argv[1];
     string archivo_salida = argv[2];
 
     ManejadorDeArchivosSecuencial manejador_de_archivos;
-    stat = manejador_de_archivos.CargarDatos( archivo_entrada, validaciones, msg);
+    stat = manejador_de_archivos.CargarDatos( archivo_entrada, eventos, msg);
     /*  +++
         Varios hilos pueden leer simultaneamente el archivo
         para 10 millones de registros, el dataset pesa al rededor de 300 MB
@@ -32,7 +32,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Lectura finalizada - total validaciones: "<<validaciones->size()<<endl;
+        cout<<"Lectura finalizada - total eventos: "<<eventos->size()<<endl;
 
         break;
     case -1:
@@ -46,7 +46,7 @@ int main (int argc, char** argv) {
     }
 
     AnalizadorDeDatosSecuencial analizador_de_datos;
-    stat = analizador_de_datos.OrdenarValidaciones(validaciones);
+    stat = analizador_de_datos.OrdenarEventos(eventos);
     /*  +++
         El ordenamiento se puede paralelizar con el algoritmo Merge Sort
     */
@@ -54,7 +54,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Ordenamiento de validaciones finalizado"<<endl;
+        cout<<"Ordenamiento de eventos finalizado"<<endl;
         break;
     case -1:
         cout<<"Error al ordenar:"<<endl;
@@ -65,15 +65,15 @@ int main (int argc, char** argv) {
     unique_ptr<Distribucion> promedio;
     unique_ptr<map<int,Distribucion> > ciudadanos;
 
-    stat = analizador_de_datos.AgruparYPromediar(*validaciones,
+    stat = analizador_de_datos.AgruparYPromediar(*eventos,
                                             ciudadanos,
                                             promedio);
 
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        validaciones, como las validaciones de un ciudadano están cerca
-        en el arreglo de validaciones, los conflictos por varios hilos
-        intentado actualizar el mismo ciudadano se verán minimizados.
+        eventos, como las eventos de un grupo están cerca
+        en el arreglo de eventos, los conflictos por varios hilos
+        intentado actualizar el mismo grupo se verán minimizados.
     */
 
     switch (stat)
