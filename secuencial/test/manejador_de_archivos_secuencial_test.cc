@@ -67,13 +67,16 @@ SUITE(ManejadorDeArchivosSecuencialTest)
         CHECK_EQUAL(-1,res);
     }
 
-    TEST (GenerarSalidaMap)
+    TEST (GenerarSalida)
     {
         remove( "bin/Test/salidaPrueba.csv" );
-        map<int,Distribucion> ciudadanos;
-        ciudadanos[1].diferencia_ = 1.2;
-        ciudadanos[7].diferencia_ = 0.5;
-        ciudadanos[3].diferencia_ = 0.003;
+        vector<Distribucion> ciudadanos;
+        ciudadanos.push_back(Distribucion(1));
+        ciudadanos.push_back(Distribucion(7));
+        ciudadanos.push_back(Distribucion(3));
+        ciudadanos[0].EstablecerResiduo(1.2);
+        ciudadanos[1].EstablecerResiduo(0.5);
+        ciudadanos[2].EstablecerResiduo(0.003);
 
         string archivo = "bin/Test/salidaPrueba.csv";
         ManejadorDeArchivosSecuencial manejador;
@@ -83,62 +86,23 @@ SUITE(ManejadorDeArchivosSecuencialTest)
                         IManejadorDeArchivos::ModoDeEscritura::mantener);
 
         CHECK_EQUAL(0, stat);
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","3;0.003","7;0.5"});
-
-        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
-                        IManejadorDeArchivos::ModoDeEscritura::mantener);
-
-        CHECK_EQUAL(-2, stat);
-
-        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
-                        IManejadorDeArchivos::ModoDeEscritura::concatenar);
-
-
-        CHECK_EQUAL(0, stat);
-
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","3;0.003","7;0.5",
-                                    "1;1.2","3;0.003","7;0.5"});
-
-        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
-                        IManejadorDeArchivos::ModoDeEscritura::reemplazar);
-
-        CHECK_EQUAL(0, stat);
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","3;0.003","7;0.5"});
-
-        remove( "bin/Test/salidaPrueba.csv" );
-    }
-    TEST (GenerarSalidaIndice)
-    {
-        remove( "bin/Test/salidaPrueba.csv" );
-        map<int,Distribucion> ciudadanos;
-        ciudadanos[1].diferencia_ = 1.2;
-        ciudadanos[7].diferencia_ = 0.5;
-        ciudadanos[3].diferencia_ = 0.003;
-        vector<map<int,Distribucion>::const_iterator> indice;
-        indice.push_back(ciudadanos.find(1));
-        indice.push_back(ciudadanos.find(7));
-        indice.push_back(ciudadanos.find(3));
-
-        string archivo = "bin/Test/salidaPrueba.csv";
-        ManejadorDeArchivosSecuencial manejador;
-
-        string msg;
-        int stat = manejador.GenerarSalida(archivo, indice, msg,
-                        IManejadorDeArchivos::ModoDeEscritura::mantener);
-        CHECK_EQUAL(0, stat);
         VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003"});
 
-        stat = manejador.GenerarSalida(archivo, indice, msg,
+        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
                         IManejadorDeArchivos::ModoDeEscritura::mantener);
+
         CHECK_EQUAL(-2, stat);
 
-        stat = manejador.GenerarSalida(archivo, indice, msg,
+        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
                         IManejadorDeArchivos::ModoDeEscritura::concatenar);
+
+
         CHECK_EQUAL(0, stat);
+
         VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003",
                                     "1;1.2","7;0.5","3;0.003"});
 
-        stat = manejador.GenerarSalida(archivo, indice, msg,
+        stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
                         IManejadorDeArchivos::ModoDeEscritura::reemplazar);
 
         CHECK_EQUAL(0, stat);

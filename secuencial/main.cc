@@ -25,9 +25,11 @@ int main (int argc, char** argv) {
 
     ManejadorDeArchivosSecuencial manejador_de_archivos;
     stat = manejador_de_archivos.CargarDatos( archivo_entrada, eventos, msg);
-    /*  +++
-        Varios hilos pueden leer simultaneamente el archivo
-        para 10 millones de registros, el dataset pesa al rededor de 300 MB
+    /*  ---
+        Después de realizar pruebas, se encontró que el tiempo de ejecucion del
+          cargue del archivo se ve afectado más por la velocidad de respuesta del
+          disco que por el procesamiento de las líneas y caracteres. Por lo tanto,
+          se decidió mantener este proceso secuencial
     */
     switch (stat)
     {
@@ -63,10 +65,10 @@ int main (int argc, char** argv) {
     }
 
     unique_ptr<Distribucion> promedio;
-    unique_ptr<map<int,Distribucion> > ciudadanos;
+    unique_ptr<vector<Distribucion> > grupos;
 
     stat = analizador_de_datos.AgruparYPromediar(*eventos,
-                                            ciudadanos,
+                                            grupos,
                                             promedio);
 
     /*  +++
@@ -79,8 +81,8 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Agrupamiento y promedio finalizados - total ciudadanos: "<<
-            ciudadanos->size()<<endl;
+        cout<<"Agrupamiento y promedio finalizados - total grupos: "<<
+            grupos->size()<<endl;
 
         break;
     case -1:
@@ -89,10 +91,10 @@ int main (int argc, char** argv) {
         break;
     }
 
-    stat = analizador_de_datos.CompararDistribuciones(ciudadanos, *promedio);
+    stat = analizador_de_datos.CompararDistribuciones(*grupos, *promedio);
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        ciudadanos, la única memoria que necesitan todos los hilos
+        grupos, la única memoria que necesitan todos los hilos
         es la distribución promedio, sin embargo esta sólo es leída,
         así que no debería haber conflictos.
     */
@@ -107,9 +109,7 @@ int main (int argc, char** argv) {
         break;
     }
 
-    unique_ptr<vector<map<int,Distribucion>::const_iterator> > indice;
-
-    stat = analizador_de_datos.OrdenarDistribuciones(*ciudadanos, indice);
+    stat = analizador_de_datos.OrdenarDistribuciones(grupos);
     /*  +++
         Paralelizable - ordenamiento.
     */
@@ -125,7 +125,7 @@ int main (int argc, char** argv) {
     }
 
     stat = manejador_de_archivos.GenerarSalida(archivo_salida,
-                                               *indice,
+                                               *grupos,
                                                msg);
     /*  ---
         No paralelizable - sólo un hilo puede escribir a la vez

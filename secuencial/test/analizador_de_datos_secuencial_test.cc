@@ -91,11 +91,10 @@ SUITE(AnalizadorDeDatosSecuencialTest)
         eventos.push_back(aux);
 
         AnalizadorDeDatosSecuencial analizador;
-        unique_ptr<map<int,Distribucion> > ciudadanos;
+        unique_ptr<vector<Distribucion> > ciudadanos;
         unique_ptr<Distribucion> promedio;
         int est = analizador.AgruparYPromediar(eventos, ciudadanos, promedio);
         CHECK_EQUAL(0,est);
-        map<int,Distribucion>::iterator it = ciudadanos->begin();
         vector<int> esperados[] = {{1,0,0,0,0,0,0,0,0,0,
                                     0,0,3,0,0,0,0,0,0,0,
                                     1,0,0,0,0,0,0,0,0,0,
@@ -115,34 +114,31 @@ SUITE(AnalizadorDeDatosSecuencialTest)
         vector<int> total_esperado ={8,4,1,13};
         for(int i=0;i<3;i++)
         {
-            CHECK_ARRAY_EQUAL(esperados[i],it->second.frecuencias_,
+            CHECK_ARRAY_EQUAL(esperados[i],(*ciudadanos)[i].Frecuencias(),
                                Distribucion::tamano_frecuencias_);
-            CHECK_EQUAL(total_esperado[i], it->second.total_);
-            it++;
+            CHECK_EQUAL(total_esperado[i], (*ciudadanos)[i].Total());
         }
-        CHECK_ARRAY_EQUAL(esperados[3],promedio->frecuencias_,
+        CHECK_ARRAY_EQUAL(esperados[3],promedio->Frecuencias(),
                           Distribucion::tamano_frecuencias_);
-        CHECK_EQUAL(total_esperado[3], promedio->total_);
+        CHECK_EQUAL(total_esperado[3], promedio->Total());
 
     }
 
     TEST(OrdenarDistribuciones)
     {
-        map<int,Distribucion> ciudadanos;
-        unique_ptr<vector<map<int,Distribucion>::const_iterator> > indice;
-        Distribucion dist;
-        dist.residuo_ = 0.05;
-        ciudadanos[1] = dist;
-        dist.residuo_ = 0.0001;
-        ciudadanos[2] = dist;
-        dist.residuo_ = 0.3;
-        ciudadanos[3] = dist;
+        unique_ptr<vector<Distribucion> >ciudadanos(new vector<Distribucion>());
+        ciudadanos->push_back(Distribucion(1));
+        ciudadanos->back().EstablecerResiduo(0.05);
+        ciudadanos->push_back(Distribucion(2));
+        ciudadanos->back().EstablecerResiduo(0.0001);
+        ciudadanos->push_back(Distribucion(3));
+        ciudadanos->back().EstablecerResiduo(0.3);
+
         AnalizadorDeDatosSecuencial analizador;
-        analizador.OrdenarDistribuciones(ciudadanos,indice);
-        CHECK_EQUAL(3U,indice->size());
-        CHECK_EQUAL(2,(*indice)[0]->first);
-        CHECK_EQUAL(1,(*indice)[1]->first);
-        CHECK_EQUAL(3,(*indice)[2]->first);
+        analizador.OrdenarDistribuciones(ciudadanos);
+        CHECK_EQUAL(2,(*ciudadanos)[0].Grupo());
+        CHECK_EQUAL(1,(*ciudadanos)[1].Grupo());
+        CHECK_EQUAL(3,(*ciudadanos)[2].Grupo());
     }
 }
 } // namespace test

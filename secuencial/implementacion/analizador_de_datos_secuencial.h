@@ -24,20 +24,18 @@ class AnalizadorDeDatosSecuencial: public IAnalizadorDeDatos
 
     int AgruparYPromediar(
             const std::vector<Evento>& eventos,
-            std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
+            std::unique_ptr<std::vector<Distribucion> >& grupos,
             std::unique_ptr<Distribucion>& promedio);
 
     int CompararDistribuciones(
-            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos,
+            std::vector<Distribucion>& grupos,
             const Distribucion& promedio);
 
     int RegresionLineal(
-            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos);
+            std::vector<Distribucion>& grupos);
 
     int OrdenarDistribuciones(
-            const std::map<int,Distribucion>& ciudadanos,
-            std::unique_ptr<
-                std::vector<std::map<int,Distribucion>::const_iterator> >& indice);
+            std::unique_ptr<std::vector<Distribucion> >& grupos);
 };
 } // namespace implementacion
 } // namespace secuencial

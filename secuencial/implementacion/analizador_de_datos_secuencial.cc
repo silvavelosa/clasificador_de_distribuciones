@@ -26,66 +26,46 @@ int AnalizadorDeDatosSecuencial::OrdenarEventos(
 
 int AnalizadorDeDatosSecuencial::AgruparYPromediar(
         const vector<Evento>& eventos,
-        unique_ptr<map<int,Distribucion> >& ciudadanos,
+        unique_ptr<vector<Distribucion> >& grupos,
         unique_ptr<Distribucion>& promedio) {
     promedio.reset(new Distribucion());
-    ciudadanos.reset(new map<int,Distribucion> ());
-    map<int,Distribucion>::iterator actual = ciudadanos->end();
+    grupos.reset(new vector<Distribucion> ());
     for(unsigned int i=0;i<eventos.size();i++)
     {
-        if(actual == ciudadanos->end()
-                || actual->first != eventos[i].id_grupo_)
+        if(grupos->empty() || grupos->back().Grupo() != eventos[i].id_grupo_)
         {
-            actual = ciudadanos->emplace_hint(ciudadanos->end(),
-                                      eventos[i].id_grupo_,Distribucion());
+             grupos->push_back(Distribucion(eventos[i].id_grupo_));
         }
-        if(Distribucion::tamano_frecuencias_ <= eventos[i].valor_/10)
-        {
-            actual->second.frecuencias_[Distribucion::tamano_frecuencias_-1]++;
-            promedio->frecuencias_[Distribucion::tamano_frecuencias_-1]++;
-        }
-        else
-        {
-            actual->second.frecuencias_[eventos[i].valor_/10]++;
-            promedio->frecuencias_[eventos[i].valor_/10]++;
-        }
-        actual->second.total_++;
-        promedio->total_++;
+        grupos->back().AnadirEvento(eventos[i]);
+        promedio->AnadirEvento(eventos[i]);
     }
     return 0;
 }
 
 int AnalizadorDeDatosSecuencial::CompararDistribuciones(
-        const unique_ptr<map<int,Distribucion> >& ciudadanos,
+        vector<Distribucion>& grupos,
         const Distribucion& promedio) {
-    for(unsigned int i=0;i<ciudadanos->size();i++)
+    for(unsigned int i=0;i<grupos.size();i++)
     {
-        ciudadanos->at(i).diferencia_ = ciudadanos->at(i).Diferencia(promedio);
+        grupos[i].EstablecerDiferencia(promedio);
     }
     return 0;
 }
 
 
 int AnalizadorDeDatosSecuencial::RegresionLineal(
-            const std::unique_ptr<std::map<int,Distribucion> >& ciudadanos) {
-
-  return -3;
+        vector<Distribucion>& grupos) {
+    return -3;
 }
 
-bool OrdenarPorResiduo (map<int,Distribucion>::const_iterator a,
-                        map<int,Distribucion>::const_iterator b) {
-    return (a->second.residuo_ < b-> second.residuo_);
+bool OrdenarPorResiduo (const Distribucion& a,
+                        const Distribucion& b) {
+    return (a.Residuo() < b.Residuo());
 }
 
 int AnalizadorDeDatosSecuencial::OrdenarDistribuciones(
-        const map<int,Distribucion>& ciudadanos,
-        unique_ptr<vector<map<int,Distribucion>::const_iterator> >& indice) {
-    indice.reset(new vector<map<int,Distribucion>::const_iterator>() );
-    for(map<int,Distribucion>::const_iterator it = ciudadanos.begin();
-                it!= ciudadanos.end();
-                it++)
-        indice->push_back(it);
-    sort(indice->begin(),indice->end(),OrdenarPorResiduo);
+        unique_ptr<vector<Distribucion> >& grupos) {
+        sort(grupos->begin(),grupos->end(),OrdenarPorResiduo);
     return 0;
 }
 } // namespace implementacion

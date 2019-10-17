@@ -2,6 +2,7 @@
 #define CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -48,23 +49,91 @@ class Evento
 class Distribucion
 {
  public:
-    static const int tamano_frecuencias_;
-    std::vector<int> frecuencias_;
-    int total_;
-    double diferencia_;
-    double residuo_;
-    Distribucion ()
+    static const unsigned int tamano_frecuencias_;
+    static const unsigned int tamano_intervalos_;
+    Distribucion (int id_grupo)
     {
-        frecuencias_.resize(tamano_frecuencias_);
+        id_grupo_ = id_grupo;
+        frecuencias_.reset(new std::vector<int>(tamano_frecuencias_));
         total_ = 0;
         diferencia_ = 0;
         residuo_ = 0;
     }
+    Distribucion(): Distribucion(0){};
+    Distribucion(int id_grupo, std::unique_ptr<std::vector<int> > frecuencias)
+            : Distribucion(id_grupo)
+    {
+        frecuencias_ = std::move(frecuencias);
+        for(unsigned int i=tamano_frecuencias_;i<frecuencias_->size();i++)
+        {
+                (*frecuencias_)[tamano_frecuencias_-1]+=(*frecuencias_)[i];
+        }
+        frecuencias_->resize(tamano_frecuencias_);
+        for(unsigned int i=0;i<tamano_frecuencias_;i++)
+            total_ += (*frecuencias_)[i];
+
+    }
+
     double FrecuenciaRelativa (int i) const
     {
-        return (double)frecuencias_[i]/total_;
+        return (double)(*frecuencias_)[i]/total_;
     }
     double Diferencia (const Distribucion& a) const;
+    void AnadirEvento(const Evento& evento)
+    {
+        unsigned int intervalo = ((unsigned int)evento.valor_)/tamano_intervalos_;
+        if(intervalo >= tamano_frecuencias_)
+        {
+            #pragma omp atomic
+            (*frecuencias_)[tamano_frecuencias_-1]++;
+        }
+        else
+        {
+            #pragma omp atomic
+            (*frecuencias_)[intervalo]++;
+        }
+
+        #pragma omp atomic
+        total_++;
+    }
+    const std::vector<int>& Frecuencias()
+    {
+        return *frecuencias_;
+    }
+    int Grupo() const
+    {
+        return id_grupo_;
+    }
+    int Total() const
+    {
+        return total_;
+    }
+    double Diferencia()const
+    {
+        return diferencia_;
+    }
+    double Residuo() const
+    {
+        return residuo_;
+    }
+    void EstablecerDiferencia(double diferencia)
+    {
+        diferencia_ = diferencia;
+    }
+    void EstablecerDiferencia(const Distribucion& a)
+    {
+        diferencia_ = Diferencia(a);
+    }
+    void EstablecerResiduo(double residuo)
+    {
+        residuo_ = residuo;
+    }
+ private:
+    std::unique_ptr<std::vector<int> > frecuencias_;
+    int id_grupo_;
+    int total_;
+    double diferencia_;
+    double residuo_;
 };
 
 } // namespace componentes_compartidos

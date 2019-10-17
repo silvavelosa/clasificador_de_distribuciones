@@ -71,42 +71,7 @@ int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
 }
 
 int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
-        const map<int,Distribucion>& ciudadanos,
-        string& msg,
-        IManejadorDeArchivos::ModoDeEscritura modo) {
-
-
-    int tamano = TamanoDeArchivo(archivo);
-
-    if(tamano > 0 && modo == ModoDeEscritura::mantener)
-    {
-        msg = "El archivo ya existe";
-        return -2;
-    }
-
-    std::ios::openmode modo_archivo = std::ios::out;
-    if(modo == ModoDeEscritura::concatenar)
-        modo_archivo |= std::ios::app;
-    else
-        modo_archivo |= std::ios::trunc;
-    std::ofstream salida (archivo, modo_archivo);
-
-    if(!salida.is_open())
-    {
-        return -1;
-    }
-
-    map<int,Distribucion>::const_iterator it;
-    for(it = ciudadanos.cbegin(); it!= ciudadanos.cend(); it++)
-    {
-        salida<<it->first<<";"<<it->second.diferencia_<<std::endl;
-    }
-    salida.close();
-    return 0;
-}
-
-int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
-        const vector<map<int,Distribucion>::const_iterator>& indice,
+        const vector<Distribucion>& grupos,
         string& msg,
         IManejadorDeArchivos::ModoDeEscritura modo) {
 
@@ -128,9 +93,9 @@ int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
         return -1;
     }
 
-    for(unsigned int i = 0; i< indice.size(); i++)
+    for(unsigned int i = 0; i< grupos.size(); i++)
     {
-        salida<<indice[i]->first<<";"<<indice[i]->second.diferencia_<<std::endl;
+        salida<<grupos[i].Grupo()<<";"<<grupos[i].Residuo()<<std::endl;
     }
     salida.close();
     return 0;

@@ -24,13 +24,7 @@ class ManejadorDeArchivosSecuencial: public IManejadorDeArchivos
             std::string& msg);
 
     int GenerarSalida( const std::string& archivo,
-            const std::map<int,Distribucion>& ciudadano,
-            std::string& msg,
-            IManejadorDeArchivos::ModoDeEscritura modo
-                = IManejadorDeArchivos::ModoDeEscritura::mantener);
-
-    int GenerarSalida( const std::string& archivo,
-            const std::vector<std::map<int,Distribucion>::const_iterator>& indice,
+            const std::vector<Distribucion>& indice,
             std::string& msg,
             IManejadorDeArchivos::ModoDeEscritura modo
                 = IManejadorDeArchivos::ModoDeEscritura::mantener);

@@ -9,29 +9,16 @@ namespace clasificador_de_distribuciones
 {
 namespace componentes_compartidos
 {
-const int Distribucion::tamano_frecuencias_ = 40;
+const unsigned int Distribucion::tamano_frecuencias_ = 40;
+const unsigned int Distribucion::tamano_intervalos_ = 10;
 
 double Distribucion::Diferencia (const Distribucion& a) const {
     double diff = 0;
-    for(unsigned int i=0;
-            i+1 < min(frecuencias_.size(), a.frecuencias_.size());
-            i++)
+    for(unsigned int i=0; i < Distribucion::tamano_frecuencias_; i++)
     {
         diff += pow(FrecuenciaRelativa(i) - a.FrecuenciaRelativa(i), 2);
     }
-    double miResto=0, aResto=0;
-
-    for(unsigned int i=min(frecuencias_.size(), a.frecuencias_.size())-1;
-            i < max(frecuencias_.size(), a.frecuencias_.size());
-            i++)
-    {
-        if(frecuencias_.size() > i)
-            miResto += FrecuenciaRelativa(i);
-        if(a.frecuencias_.size() > i)
-            aResto += a.FrecuenciaRelativa(i);
-    }
-    diff += pow(miResto - aResto, 2);
-    diff/= min(frecuencias_.size(), a.frecuencias_.size());
+    diff/= Distribucion::tamano_frecuencias_;
     return diff;
 }
 
