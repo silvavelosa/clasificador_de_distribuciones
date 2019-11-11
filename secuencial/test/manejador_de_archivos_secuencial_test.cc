@@ -27,7 +27,7 @@ SUITE(ManejadorDeArchivosSecuencialTest)
             ifstream lectura (archivo);
             REQUIRE CHECK(lectura.is_open());
             string linea;
-            for(unsigned int i=0;i<esperado.size();i++)
+            for(size_t i=0;i<esperado.size();i++)
             {
                 CHECK(getline(lectura, linea));
                 CHECK_EQUAL(esperado[i],linea);

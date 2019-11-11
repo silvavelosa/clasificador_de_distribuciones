@@ -1,6 +1,9 @@
+#include <cmath>
 #include <map>
 #include <memory>
 #include <vector>
+
+#include <gsl/gsl_randist.h>
 #include <UnitTest++.h>
 
 #include "secuencial/implementacion/analizador_de_datos_secuencial.h"
@@ -12,6 +15,7 @@ using std::vector;
 namespace clasificador_de_distribuciones
 {
 using namespace componentes_compartidos;
+
 namespace secuencial
 {
 using namespace implementacion;
@@ -95,7 +99,7 @@ SUITE(AnalizadorDeDatosSecuencialTest)
         unique_ptr<Distribucion> promedio;
         int est = analizador.AgruparYPromediar(eventos, ciudadanos, promedio);
         CHECK_EQUAL(0,est);
-        vector<int> esperados[] = {{1,0,0,0,0,0,0,0,0,0,
+        vector<unsigned int> esperados[] = {{1,0,0,0,0,0,0,0,0,0,
                                     0,0,3,0,0,0,0,0,0,0,
                                     1,0,0,0,0,0,0,0,0,0,
                                     0,0,0,0,0,0,0,0,0,3},
@@ -111,17 +115,58 @@ SUITE(AnalizadorDeDatosSecuencialTest)
                                     1,0,3,0,0,0,0,0,0,0,
                                     2,0,0,0,0,1,0,0,0,0,
                                     1,0,0,0,0,0,0,0,0,3}};
-        vector<int> total_esperado ={8,4,1,13};
+        vector<unsigned int> total_esperado ={8,4,1,13};
         for(int i=0;i<3;i++)
         {
             CHECK_ARRAY_EQUAL(esperados[i],(*ciudadanos)[i].Frecuencias(),
-                               Distribucion::tamano_frecuencias_);
+                               Distribucion::TamanoIntervalos());
             CHECK_EQUAL(total_esperado[i], (*ciudadanos)[i].Total());
         }
         CHECK_ARRAY_EQUAL(esperados[3],promedio->Frecuencias(),
-                          Distribucion::tamano_frecuencias_);
+                          Distribucion::TamanoIntervalos());
         CHECK_EQUAL(total_esperado[3], promedio->Total());
 
+    }
+
+    TEST (RegresionLineal)
+    {
+        vector<Distribucion> grupos;
+        unique_ptr<vector<unsigned int> > actual;
+
+        gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+        double base = 4.0;
+        for(int id = 0;id <100; id++)
+        {
+            unsigned int tam = floor(exp(base));
+            actual.reset(new vector<unsigned int>({tam}));
+            grupos.push_back(Distribucion(id,std::move(actual)));
+
+            double ei = gsl_rng_uniform(r)-0.5;
+            double dif = exp(1.73*base + 0.85 + ei);
+            if(id%100 == 99)
+            {
+                dif = exp(2.5*base + 4 );
+            }
+            grupos.back().EstablecerDiferencia(dif);
+            base += 5.0/100;
+        }
+
+        AnalizadorDeDatosSecuencial analizador;
+        int ret = analizador.RegresionLineal(grupos);
+        REQUIRE CHECK_EQUAL(0, ret);
+
+        for(int id = 0;id <100; id++)
+        {
+            if(id%100 != 99)
+            {
+                CHECK_CLOSE(0,grupos[id].Residuo(),0.6);
+            }
+            else
+            {
+                CHECK(grupos[id].Residuo() > 1.5);
+            }
+        }
+        gsl_rng_free(r);
     }
 
     TEST(OrdenarDistribuciones)
@@ -136,9 +181,9 @@ SUITE(AnalizadorDeDatosSecuencialTest)
 
         AnalizadorDeDatosSecuencial analizador;
         analizador.OrdenarDistribuciones(ciudadanos);
-        CHECK_EQUAL(2,(*ciudadanos)[0].Grupo());
+        CHECK_EQUAL(3,(*ciudadanos)[0].Grupo());
         CHECK_EQUAL(1,(*ciudadanos)[1].Grupo());
-        CHECK_EQUAL(3,(*ciudadanos)[2].Grupo());
+        CHECK_EQUAL(2,(*ciudadanos)[2].Grupo());
     }
 }
 } // namespace test

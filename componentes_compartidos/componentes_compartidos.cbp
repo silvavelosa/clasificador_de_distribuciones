@@ -43,6 +43,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-l:libUnitTest++.a" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$exe_output" />
@@ -54,8 +55,12 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-fopenmp" />
 			<Add directory="../" />
 		</Compiler>
+		<Linker>
+			<Add option="-fopenmp" />
+		</Linker>
 		<Unit filename="entidades.cc" />
 		<Unit filename="entidades.h" />
 		<Unit filename="interfaces.h" />

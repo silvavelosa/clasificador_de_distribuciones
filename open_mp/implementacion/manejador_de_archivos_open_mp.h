@@ -19,6 +19,12 @@ namespace implementacion
 class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
 {
  public:
+    ManejadorDeArchivosOpenMP(unsigned int n_hilos)
+    {
+     n_hilos_ = n_hilos;
+    }
+
+    ManejadorDeArchivosOpenMP(): ManejadorDeArchivosOpenMP(4) {}
     int CargarDatos( const std::string& archivo,
             std::unique_ptr<std::vector<Evento> >& eventos,
             std::string& msg);
@@ -31,6 +37,7 @@ class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
 
  private:
     int TamanoDeArchivo (const std::string& archivo);
+    unsigned int n_hilos_;
 };
 } // namespace implementacion
 } // namespace open_mp

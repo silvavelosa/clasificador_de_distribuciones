@@ -5,6 +5,8 @@
 		<Project filename="secuencial/secuencial.cbp">
 			<Depends filename="componentes_compartidos/componentes_compartidos.cbp" />
 		</Project>
-		<Project filename="open_mp/open_mp.cbp" />
+		<Project filename="open_mp/open_mp.cbp">
+			<Depends filename="componentes_compartidos/componentes_compartidos.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="open_mp" />
 		<Option pch_mode="2" />
+		<Option default_target="Release" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
@@ -23,6 +24,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="..\nofetal_simp201720M.csv ..\salida.csv" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -41,6 +43,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-l:libUnitTest++.a" />
 					<Add library="../componentes_compartidos/bin/Release/componentes_compartidos.a" />
 				</Linker>
 				<ExtraCommands>
@@ -58,6 +61,8 @@
 		</Compiler>
 		<Linker>
 			<Add option="-fopenmp" />
+			<Add option="-l:libgsl.a" />
+			<Add option="-l:libgslcblas.a" />
 		</Linker>
 		<Unit filename="implementacion/analizador_de_datos_open_mp.cc" />
 		<Unit filename="implementacion/analizador_de_datos_open_mp.h" />

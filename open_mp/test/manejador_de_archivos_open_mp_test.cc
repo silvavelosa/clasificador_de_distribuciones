@@ -15,6 +15,7 @@ using std::vector;
 namespace clasificador_de_distribuciones
 {
 using namespace componentes_compartidos;
+
 namespace open_mp
 {
 using namespace implementacion;
@@ -27,7 +28,7 @@ SUITE(ManejadorDeArchivosOpenMPTest)
             ifstream lectura (archivo);
             REQUIRE CHECK(lectura.is_open());
             string linea;
-            for(unsigned int i=0;i<esperado.size();i++)
+            for(size_t i=0;i<esperado.size();i++)
             {
                 CHECK(getline(lectura, linea));
                 CHECK_EQUAL(esperado[i],linea);
@@ -43,7 +44,17 @@ SUITE(ManejadorDeArchivosOpenMPTest)
         string msg;
         int res = manejador.CargarDatos(archivo,eventos,msg);
         REQUIRE CHECK_EQUAL(0,res);
-        CHECK(eventos->size() == 3);
+        CHECK_EQUAL(5U,eventos->size());
+    }
+    TEST(CargarDatosGrande)
+    {
+        string archivo = "test/data/entradaPruebaGrande.csv";
+        ManejadorDeArchivosOpenMP manejador;
+        unique_ptr<vector<Evento> > eventos;
+        string msg;
+        int res = manejador.CargarDatos(archivo,eventos,msg);
+        REQUIRE CHECK_EQUAL(0,res);
+        CHECK_EQUAL(1600U,eventos->size());
     }
 
     TEST(CargarDatosNOK)

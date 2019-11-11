@@ -18,14 +18,11 @@ using std::vector;
 int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
         unique_ptr<vector<Evento> >& eventos,
         string& msg) {
-    string linea;
-
+    char linea[25];
     int tamano = TamanoDeArchivo(archivo);
 
-    Evento actual;
     eventos.reset(new vector<Evento>);
-    eventos->reserve(tamano/5);
-
+    eventos->resize(tamano/5);
 
     std::ifstream entrada(archivo);
     if(!entrada.is_open() || tamano <= 0)
@@ -34,12 +31,12 @@ int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
         return -1;
     }
 
-    for(int i=1;getline(entrada, linea);i++)
+    size_t i;
+    for(i=1;entrada.getline(linea, 25);i++)
     {
-        int est = Evento::Parse(linea, actual);
-        if(est == Evento::ParseResult::OK)
-            eventos->push_back(actual);
-        else
+        int est = Evento::Parse(linea, (*eventos)[i-1]);
+
+        if(est != Evento::ParseResult::OK)
         {
             std::stringstream ss;
             switch(est)
@@ -66,6 +63,7 @@ int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
         }
     }
     entrada.close();
+    eventos->resize(i-1);
     eventos->shrink_to_fit();
     return 0;
 }
@@ -93,7 +91,7 @@ int ManejadorDeArchivosSecuencial::GenerarSalida(const string& archivo,
         return -1;
     }
 
-    for(unsigned int i = 0; i< grupos.size(); i++)
+    for(size_t i = 0; i< grupos.size(); i++)
     {
         salida<<grupos[i].Grupo()<<";"<<grupos[i].Residuo()<<std::endl;
     }

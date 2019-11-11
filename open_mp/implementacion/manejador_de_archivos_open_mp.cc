@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
 #include <omp.h>
 
 namespace clasificador_de_distribuciones
@@ -12,7 +11,10 @@ namespace open_mp
 {
 namespace implementacion
 {
+using std::ios;
 using std::map;
+using std::max;
+using std::min;
 using std::string;
 using std::unique_ptr;
 using std::vector;
@@ -20,54 +22,152 @@ using std::vector;
 int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
         unique_ptr<vector<Evento> >& eventos,
         string& msg) {
-    string linea;
 
     int tamano = TamanoDeArchivo(archivo);
 
-    Evento actual;
-    eventos.reset(new vector<Evento>);
-    eventos->reserve(tamano/5);
-
-
-    std::ifstream entrada(archivo);
-    if(!entrada.is_open() || tamano <= 0)
+    if(tamano <= 0)
     {
         eventos.reset(nullptr);
         return -1;
     }
 
-    for(int i=1;getline(entrada, linea);i++)
+    if(tamano < 10000)
     {
-        int est = Evento::Parse(linea, actual);
-        if(est == Evento::ParseResult::OK)
-            eventos->push_back(actual);
-        else
+        std::ifstream entrada(archivo);
+        char linea[25];
+
+        if(!entrada.is_open())
         {
-            std::stringstream ss;
-            switch(est)
-            {
-            case Evento::ParseResult::IdGrupoVacio:
-                ss<<"IdGrupo vacio en la linea "<<i;
-                break;
-            case Evento::ParseResult::ValorVacio:
-                ss<<"Valor vacio en la linea "<<i;
-                break;
-            case Evento::ParseResult::CaracterInvalido:
-                ss<<"Caracter invalido en la linea "<<i;
-                break;
-            case Evento::ParseResult::LineaIncompleta:
-                ss<<"Linea incompleta "<<i;
-                break;
-            case Evento::ParseResult::DatosSobrantes:
-                ss<<"Datos sobrantes en la linea "<<i;
-                break;
-            }
             eventos.reset(nullptr);
-            msg = ss.str();
-            return -2;
+            return -1;
         }
+
+        eventos.reset(new vector<Evento>);
+        eventos->resize(tamano/5);
+
+        size_t i;
+        for(i=1;entrada.getline(linea, 25);i++)
+        {
+            int est = Evento::Parse(linea, (*eventos)[i-1]);
+
+            if(est != Evento::ParseResult::OK)
+            {
+                std::stringstream ss;
+                switch(est)
+                {
+                case Evento::ParseResult::IdGrupoVacio:
+                    ss<<"IdGrupo vacio en la linea "<<i;
+                    break;
+                case Evento::ParseResult::ValorVacio:
+                    ss<<"Valor vacio en la linea "<<i;
+                    break;
+                case Evento::ParseResult::CaracterInvalido:
+                    ss<<"Caracter invalido en la linea "<<i;
+                    break;
+                case Evento::ParseResult::LineaIncompleta:
+                    ss<<"Linea incompleta "<<i;
+                    break;
+                case Evento::ParseResult::DatosSobrantes:
+                    ss<<"Datos sobrantes en la linea "<<i;
+                    break;
+                }
+                eventos.reset(nullptr);
+                msg = ss.str();
+                return -2;
+            }
+        }
+        entrada.close();
+        eventos->resize(i-1);
+        eventos->shrink_to_fit();
+        return 0;
     }
-    entrada.close();
+
+    eventos.reset(new vector<Evento>);
+    eventos->resize(tamano/5);
+    size_t saltar = tamano/n_hilos_;
+    size_t evento_actual = 0, tamano_real = 0;
+    int ret =0;
+
+
+    #pragma omp parallel for schedule(dynamic, 1)
+    for(unsigned int i=0;i<n_hilos_;i++)
+    {
+        size_t caracter = 0;
+        std::ifstream entrada(archivo);
+        char linea[25];
+
+        if(!entrada.is_open())
+        {
+            ret = -1;
+        }
+
+        entrada.seekg(saltar*i, ios::beg);
+
+        if(i!=0)
+        {
+            entrada.getline(linea, 25);
+            caracter += entrada.gcount();
+        }
+
+        size_t pos=100, ini=0, fin = 100;
+
+        while((caracter <= saltar || i == n_hilos_-1) && ret == 0 &&
+            entrada.getline(linea, 25))
+        {
+            if(pos == fin)
+            {
+                #pragma omp critical
+                {
+                    pos = ini = evento_actual;
+                    evento_actual+= max(1, (int) (saltar-caracter)/25);
+                    fin = evento_actual;
+                }
+            }
+            int est = Evento::Parse(linea, (*eventos)[pos]);
+            pos++;
+            if(est != Evento::ParseResult::OK)
+            {
+                std::stringstream ss;
+                switch(est)
+                {
+                case Evento::ParseResult::IdGrupoVacio:
+                    ss<<"IdGrupo vacio en la linea "<<i;
+                    break;
+                case Evento::ParseResult::ValorVacio:
+                    ss<<"Valor vacio en la linea "<<i;
+                    break;
+                case Evento::ParseResult::CaracterInvalido:
+                    ss<<"Caracter invalido en la linea "<<i;
+                    break;
+                case Evento::ParseResult::LineaIncompleta:
+                    ss<<"Linea incompleta "<<i;
+                    break;
+                case Evento::ParseResult::DatosSobrantes:
+                    ss<<"Datos sobrantes en la linea "<<i<<entrada.tellg();
+                    break;
+                }
+                msg = ss.str();
+                ret = -2;
+            }
+
+            caracter += entrada.gcount();
+        }
+        #pragma omp critical
+        {
+            /*std::cout<<"POS:"<<pos<<" "<<i<<std::endl;
+            std::cout<<entrada.tellg()<<" "<<saltar*(i+1)<<std::endl;*/
+            tamano_real= max(tamano_real, pos);
+        }
+        entrada.close();
+    }
+
+    if(ret < 0)
+    {
+        eventos.reset(nullptr);
+        return ret;
+    }
+
+    eventos->resize(tamano_real);
     eventos->shrink_to_fit();
     return 0;
 }
@@ -95,7 +195,7 @@ int ManejadorDeArchivosOpenMP::GenerarSalida(const string& archivo,
         return -1;
     }
 
-    for(unsigned int i = 0; i< grupos.size(); i++)
+    for(size_t i = 0; i< grupos.size(); i++)
     {
         salida<<grupos[i].Grupo()<<";"<<grupos[i].Residuo()<<std::endl;
     }

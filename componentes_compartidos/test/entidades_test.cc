@@ -188,14 +188,14 @@ SUITE (DistribucionTest)
 {
     TEST (Diferencia)
     {
-        Distribucion a(123,unique_ptr<vector<int> >(
-                new vector<int> ({183, 69, 107, 127, 198, 110, 66, 148, 96, 84,
+        Distribucion a(123,unique_ptr<vector<unsigned int> >(
+                new vector<unsigned int> ({183, 69, 107, 127, 198, 110, 66, 148, 96, 84,
                                  61, 183, 112, 130, 160, 106, 84, 124, 7, 145,
                                  130, 165, 184, 190, 164, 31, 12, 71, 173, 130,
                                  22, 54, 168, 190, 195, 55, 83, 16, 66, 170}) ) );
 
-        Distribucion b(127,unique_ptr<vector<int> >(
-                new vector<int> ({81, 122, 105, 67, 22, 24, 62, 192, 57, 48,
+        Distribucion b(127,unique_ptr<vector<unsigned int> >(
+                new vector<unsigned int> ({81, 122, 105, 67, 22, 24, 62, 192, 57, 48,
                                  9, 156, 182, 131, 118, 20, 30, 61, 158, 67,
                                  1, 34, 77, 53, 52, 191, 22, 72, 159, 197,
                                  172, 50, 6, 37, 38, 20, 146, 102, 83, 73}) ) );

@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -12,10 +13,17 @@ using namespace std;
 
 
 int main (int argc, char** argv) {
+
+    clock_t inicio = clock();
+    clock_t inicioT = inicio;
     if (argc != 3) {
-        printf("uso: ./clasificador_de_distribuciones_secuencial archivo_entrada archivo_salida");
+        printf("uso: ./clasificador_de_distribuciones_secuencial archivo_entrada \
+               archivo_salida");
         return 0;
     }
+
+    Distribucion::EstablecerTamanoFrecuencias(24);
+    Distribucion::EstablecerTamanoIntervalos(1);
 
     int stat= 0;
     string msg;
@@ -34,8 +42,8 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Lectura finalizada - total eventos: "<<eventos->size()<<endl;
-
+        cout<<"Lectura finalizada - total eventos: "<<eventos->size()
+            <<" duracion: "<<double(clock()-inicio)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
         cout<<"El archivo "<<archivo_entrada<<" no se encontró"<<endl;
@@ -46,7 +54,7 @@ int main (int argc, char** argv) {
         return 0;
         break;
     }
-
+    inicio = clock();
     AnalizadorDeDatosSecuencial analizador_de_datos;
     stat = analizador_de_datos.OrdenarEventos(eventos);
     /*  +++
@@ -56,7 +64,8 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Ordenamiento de eventos finalizado"<<endl;
+        cout<<"Ordenamiento de eventos finalizado"
+            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
         cout<<"Error al ordenar:"<<endl;
@@ -109,6 +118,23 @@ int main (int argc, char** argv) {
         break;
     }
 
+    stat = analizador_de_datos.RegresionLineal(*grupos);
+
+    /* +/-
+        probablemente sea paralelizable, sin embargo, hace falta revisar a detalle
+        el codigo de la libreria que calcula la regresion para evaluarlo.
+    */
+    switch (stat)
+    {
+    case 0:
+        cout<<"Regresion lineal y calculo de residuos finalizada"<<endl;
+        break;
+    case -1:
+        cout<<"Error al calcular residuos"<<endl;
+        return 0;
+        break;
+    }
+
     stat = analizador_de_datos.OrdenarDistribuciones(grupos);
     /*  +++
         Paralelizable - ordenamiento.
@@ -125,15 +151,17 @@ int main (int argc, char** argv) {
     }
 
     stat = manejador_de_archivos.GenerarSalida(archivo_salida,
-                                               *grupos,
-                                               msg);
+                                       *grupos,
+                                       msg,
+                                       ManejadorDeArchivosSecuencial::reemplazar);
     /*  ---
         No paralelizable - sólo un hilo puede escribir a la vez
     */
     switch (stat)
     {
     case 0:
-        cout<<"Generación de archivo de salida finalizada"<<endl;
+        cout<<"Generación de archivo de salida finalizada"
+        <<" duracion TOTAL: "<<(double)(clock()-inicioT)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
         cout<<"Error al generar archivo de salida:"<<endl<<msg<<endl;

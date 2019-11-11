@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -14,8 +15,16 @@ using namespace std;
 
 
 int main (int argc, char** argv) {
-    if (argc != 3) {
-        printf("uso: ./clasificador_de_distribuciones_open_mp archivo_entrada archivo_salida");
+
+    clock_t inicioT = clock();
+    clock_t inicio = inicioT;
+    Distribucion::EstablecerTamanoFrecuencias(24);
+    Distribucion::EstablecerTamanoIntervalos(1);
+    if (argc < 3 || argc > 4) {
+        cout<<"uso: ./clasificador_de_distribuciones_open_mp "
+            <<"archivo_entrada "
+            <<"archivo_salida "
+            <<"[hilos]"<<endl;
         return 0;
     }
 
@@ -24,8 +33,16 @@ int main (int argc, char** argv) {
     unique_ptr<vector<Evento> > eventos;
     string archivo_entrada = argv[1];
     string archivo_salida = argv[2];
+    unsigned int nth = omp_get_num_procs();
 
-    ManejadorDeArchivosOpenMP manejador_de_archivos;
+    if(argc == 4)
+    {
+        nth = atoi(argv[3]);
+    }
+
+    omp_set_num_threads(nth);
+
+    ManejadorDeArchivosOpenMP manejador_de_archivos(nth);
     stat = manejador_de_archivos.CargarDatos( archivo_entrada, eventos, msg);
     /*  +++
         Varios hilos pueden leer simultaneamente el archivo
@@ -34,7 +51,8 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Lectura finalizada - total eventos: "<<eventos->size()<<endl;
+        cout<<"Lectura finalizada - total eventos: "<<eventos->size()
+            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
 
         break;
     case -1:
@@ -46,8 +64,8 @@ int main (int argc, char** argv) {
         return 0;
         break;
     }
-
-    AnalizadorDeDatosOpenMP analizador_de_datos(omp_get_num_procs());
+    inicio = clock();
+    AnalizadorDeDatosOpenMP analizador_de_datos(nth);
     stat = analizador_de_datos.OrdenarEventos(eventos);
     /*  +++
         El ordenamiento se puede paralelizar con el algoritmo Merge Sort
@@ -56,7 +74,8 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Ordenamiento de eventos finalizado"<<endl;
+        cout<<"Ordenamiento de eventos finalizado"
+            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
         cout<<"Error al ordenar:"<<endl;
@@ -109,6 +128,23 @@ int main (int argc, char** argv) {
         break;
     }
 
+    stat = analizador_de_datos.RegresionLineal(*grupos);
+
+    /* +/-
+        probablemente sea paralelizable, sin embargo, hace falta revisar a detalle
+        el codigo de la libreria que calcula la regresion para evaluarlo.
+    */
+    switch (stat)
+    {
+    case 0:
+        cout<<"Regresion lineal y calculo de residuos finalizada"<<endl;
+        break;
+    case -1:
+        cout<<"Error al calcular residuos"<<endl;
+        return 0;
+        break;
+    }
+
     stat = analizador_de_datos.OrdenarDistribuciones(grupos);
     /*  +++
         Paralelizable - ordenamiento.
@@ -126,14 +162,16 @@ int main (int argc, char** argv) {
 
     stat = manejador_de_archivos.GenerarSalida(archivo_salida,
                                                *grupos,
-                                               msg);
+                                               msg,
+                                               ManejadorDeArchivosOpenMP::reemplazar);
     /*  ---
         No paralelizable - sólo un hilo puede escribir a la vez
     */
     switch (stat)
     {
     case 0:
-        cout<<"Generación de archivo de salida finalizada"<<endl;
+        cout<<"Generación de archivo de salida finalizada"
+        <<" duracion TOTAL: "<<(double)(clock()-inicioT)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
         cout<<"Error al generar archivo de salida:"<<endl<<msg<<endl;

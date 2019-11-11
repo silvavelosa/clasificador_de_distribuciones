@@ -29,6 +29,9 @@ class Evento
     static int Parse (const std::string& linea,
             char separador,
             Evento& evento);
+    static int Parse (const char* linea,
+            char separador,
+            Evento& evento);
     const bool operator < (const Evento& a) const
     {
         return  id_grupo_<a.id_grupo_ ||
@@ -49,27 +52,44 @@ class Evento
 class Distribucion
 {
  public:
-    static const unsigned int tamano_frecuencias_;
-    static const unsigned int tamano_intervalos_;
+    static void EstablecerTamanoFrecuencias (const size_t& tamano_frecuencias)
+    {
+        if(tamanos_actualizables_)
+            tamano_frecuencias_ = tamano_frecuencias;
+    }
+    static void EstablecerTamanoIntervalos (const size_t& tamano_intervalos)
+    {
+        if(tamanos_actualizables_)
+            tamano_intervalos_ = tamano_intervalos;
+    }
+    static const size_t& TamanoFrecuencias()
+    {
+        return tamano_frecuencias_;
+    }
+    static const size_t& TamanoIntervalos()
+    {
+        return tamano_intervalos_;
+    }
     Distribucion (int id_grupo)
     {
+        tamanos_actualizables_ = false;
         id_grupo_ = id_grupo;
-        frecuencias_.reset(new std::vector<int>(tamano_frecuencias_));
+        frecuencias_.reset(new std::vector<unsigned int>(tamano_frecuencias_));
         total_ = 0;
         diferencia_ = 0;
         residuo_ = 0;
     }
     Distribucion(): Distribucion(0){};
-    Distribucion(int id_grupo, std::unique_ptr<std::vector<int> > frecuencias)
+    Distribucion(int id_grupo, std::unique_ptr<std::vector<unsigned int> > frecuencias)
             : Distribucion(id_grupo)
     {
         frecuencias_ = std::move(frecuencias);
-        for(unsigned int i=tamano_frecuencias_;i<frecuencias_->size();i++)
+        for(size_t i=tamano_frecuencias_;i < frecuencias_->size();i++)
         {
                 (*frecuencias_)[tamano_frecuencias_-1]+=(*frecuencias_)[i];
         }
         frecuencias_->resize(tamano_frecuencias_);
-        for(unsigned int i=0;i<tamano_frecuencias_;i++)
+        for(size_t i = 0; i < tamano_frecuencias_; i++)
             total_ += (*frecuencias_)[i];
 
     }
@@ -79,24 +99,8 @@ class Distribucion
         return (double)(*frecuencias_)[i]/total_;
     }
     double Diferencia (const Distribucion& a) const;
-    void AnadirEvento(const Evento& evento)
-    {
-        unsigned int intervalo = ((unsigned int)evento.valor_)/tamano_intervalos_;
-        if(intervalo >= tamano_frecuencias_)
-        {
-            #pragma omp atomic
-            (*frecuencias_)[tamano_frecuencias_-1]++;
-        }
-        else
-        {
-            #pragma omp atomic
-            (*frecuencias_)[intervalo]++;
-        }
-
-        #pragma omp atomic
-        total_++;
-    }
-    const std::vector<int>& Frecuencias()
+    void AnadirEvento(const Evento& evento);
+    const std::vector<unsigned int>& Frecuencias()
     {
         return *frecuencias_;
     }
@@ -104,7 +108,7 @@ class Distribucion
     {
         return id_grupo_;
     }
-    int Total() const
+    unsigned int Total() const
     {
         return total_;
     }
@@ -116,7 +120,7 @@ class Distribucion
     {
         return residuo_;
     }
-    void EstablecerDiferencia(double diferencia)
+    void EstablecerDiferencia(const double& diferencia)
     {
         diferencia_ = diferencia;
     }
@@ -124,14 +128,17 @@ class Distribucion
     {
         diferencia_ = Diferencia(a);
     }
-    void EstablecerResiduo(double residuo)
+    void EstablecerResiduo(const double& residuo)
     {
         residuo_ = residuo;
     }
  private:
-    std::unique_ptr<std::vector<int> > frecuencias_;
+    static size_t tamano_frecuencias_;
+    static size_t tamano_intervalos_;
+    static bool tamanos_actualizables_;
+    std::unique_ptr<std::vector<unsigned int> > frecuencias_;
     int id_grupo_;
-    int total_;
+    unsigned int total_;
     double diferencia_;
     double residuo_;
 };

@@ -1,6 +1,7 @@
 #include "secuencial/implementacion/analizador_de_datos_secuencial.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
@@ -30,7 +31,7 @@ int AnalizadorDeDatosSecuencial::AgruparYPromediar(
         unique_ptr<Distribucion>& promedio) {
     promedio.reset(new Distribucion());
     grupos.reset(new vector<Distribucion> ());
-    for(unsigned int i=0;i<eventos.size();i++)
+    for(size_t i=0;i<eventos.size();i++)
     {
         if(grupos->empty() || grupos->back().Grupo() != eventos[i].id_grupo_)
         {
@@ -45,7 +46,7 @@ int AnalizadorDeDatosSecuencial::AgruparYPromediar(
 int AnalizadorDeDatosSecuencial::CompararDistribuciones(
         vector<Distribucion>& grupos,
         const Distribucion& promedio) {
-    for(unsigned int i=0;i<grupos.size();i++)
+    for(size_t i=0;i<grupos.size();i++)
     {
         grupos[i].EstablecerDiferencia(promedio);
     }
@@ -55,12 +56,64 @@ int AnalizadorDeDatosSecuencial::CompararDistribuciones(
 
 int AnalizadorDeDatosSecuencial::RegresionLineal(
         vector<Distribucion>& grupos) {
-    return -3;
+
+    size_t n = grupos.size();
+    size_t n_mayores_50 = 0U;
+    for(size_t i=0;i<n;i++)
+    {
+        if(grupos[i].Total() > 50)
+        {
+            n_mayores_50++;
+        }
+    }
+    gsl_matrix* tamanos = gsl_matrix_alloc(n_mayores_50,2);
+    gsl_vector* diferencias = gsl_vector_alloc(n_mayores_50);
+    gsl_vector* coef = gsl_vector_alloc(2);
+    gsl_matrix* cov = gsl_matrix_alloc(2,2);
+    for(size_t i=0, j=0;i<n && j< n_mayores_50;i++)
+    {
+        if(grupos[i].Total() > 50)
+        {
+            gsl_vector_set(diferencias, j, log(grupos[i].Diferencia()));
+            gsl_matrix_set(tamanos,j, 0, 1.0);
+            gsl_matrix_set(tamanos,j, 1, log(grupos[i].Total()));
+            j++;
+        }
+    }
+
+    gsl_multifit_robust_workspace* work
+        = gsl_multifit_robust_alloc (gsl_multifit_robust_default,n_mayores_50, 2);
+    int s;
+    s = gsl_multifit_robust (tamanos, diferencias, coef, cov, work);
+
+    if(s == GSL_SUCCESS || s == GSL_EMAXITER)
+    {
+        gsl_multifit_robust_stats estadisticas = gsl_multifit_robust_statistics(work);
+        for(size_t i=0, j=0;i<n && j< n_mayores_50;i++)
+        {
+            if(grupos[i].Total() > 50)
+            {
+                grupos[i].EstablecerResiduo(gsl_vector_get(estadisticas.r,j));
+                j++;
+            }
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    gsl_multifit_robust_free (work);
+    gsl_matrix_free(cov);
+    gsl_matrix_free(tamanos);
+    gsl_vector_free(coef);
+    gsl_vector_free(diferencias);
+    return 0;
 }
 
 bool OrdenarPorResiduo (const Distribucion& a,
                         const Distribucion& b) {
-    return (a.Residuo() < b.Residuo());
+    return (a.Residuo() > b.Residuo());
 }
 
 int AnalizadorDeDatosSecuencial::OrdenarDistribuciones(
