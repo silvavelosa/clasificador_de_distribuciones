@@ -1,7 +1,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 #include <utility>
 #include <vector>
 
@@ -208,8 +208,3 @@ SUITE (DistribucionTest)
 } // namespace test
 } // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones
-
-int main (void)
-{
-    return UnitTest::RunAllTests();
-}
