@@ -9,7 +9,8 @@ endif
 
 ifeq ($(uname_S), Windows)
 	wUTppIncludes = -IC:/Users/silva/Documents/programacion/unittest-cpp
-	wUTppLibs = -LC:/Users/silva/Documents/programacion/unittest-cpp/Deliv/Release
+	wUTppLibs = \
+		-LC:/Users/silva/Documents/programacion/unittest-cpp/Deliv/Release
 	wGSLIncludes = -IC:/Users/silva/Documents/programacion/gsl-2.6
 	wGSLLibs = -LC:/Users/silva/Documents/programacion/gsl-2.6/.libs \
 		-LC:/Users/silva/Documents/programacion/gsl-2.6/cblas/.libs
@@ -29,7 +30,8 @@ testObjs = $(objOut)/analizador_de_datos_open_mp_test.o \
 	$(objOut)/manejador_de_archivos_open_mp_test.o \
 	$(objOut)/main_test.o
 cmpCompartidos = ../componentes_compartidos
-libsComponentesCompartidos = $(cmpCompartidos)/$(binOut)/componentes_compartidos.a
+libsComponentesCompartidos = \
+	$(cmpCompartidos)/$(binOut)/componentes_compartidos.a
 
 testExe = $(binTest)/$(projectName)_test$(exeExt)
 binLib = $(binOut)/$(projectName).a
@@ -55,19 +57,25 @@ $(libsComponentesCompartidos):
 $(objOut)/%_test.o: test/%_test.cc
 	g++ -Wall -O2 -I../ $(wGSLIncludes) $(wUTppIncludes) -c $< -o $@
 
-$(objOut)/analizador_de_datos_open_mp_test.o: implementacion/analizador_de_datos_open_mp.h
+$(objOut)/analizador_de_datos_open_mp_test.o: \
+		implementacion/analizador_de_datos_open_mp.h
 
-$(objOut)/manejador_de_archivos_open_mp_test.o: implementacion/manejador_de_archivos_open_mp.h
+$(objOut)/manejador_de_archivos_open_mp_test.o: \
+		implementacion/manejador_de_archivos_open_mp.h
 
 # lib objs
 $(objOut)/%.o: implementacion/%.cc
 	g++ -Wall -fopenmp -O2 -I../ $(wGSLIncludes) -c $< -o $@
 
-$(objOut)/analizador_de_datos_open_mp.o: implementacion/analizador_de_datos_open_mp.h \
-	../componentes_compartidos/entidades.h ../componentes_compartidos/interfaces.h
+$(objOut)/analizador_de_datos_open_mp.o: \
+		implementacion/analizador_de_datos_open_mp.h \
+		../componentes_compartidos/entidades.h \
+		../componentes_compartidos/interfaces.h
 
-$(objOut)/manejador_de_archivos_open_mp.o: implementacion/manejador_de_archivos_open_mp.h \
-	../componentes_compartidos/entidades.h ../componentes_compartidos/interfaces.h
+$(objOut)/manejador_de_archivos_open_mp.o: \
+		implementacion/manejador_de_archivos_open_mp.h \
+		../componentes_compartidos/entidades.h \
+		../componentes_compartidos/interfaces.h
 
 # main
 $(objOut)/%.o: %.cc
