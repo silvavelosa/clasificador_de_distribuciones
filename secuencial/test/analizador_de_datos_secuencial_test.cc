@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <gsl/gsl_randist.h>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 
 #include "secuencial/implementacion/analizador_de_datos_secuencial.h"
 

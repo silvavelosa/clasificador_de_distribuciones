@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 
 #include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 
