@@ -42,11 +42,7 @@ class Evento
         return  id_grupo_ == a.id_grupo_ && valor_ == a.valor_;
     }
 
-    friend std::ostream &operator<<( std::ostream& output, const Evento &a ) {
-     output << "idGrupo: "<< a.id_grupo_
-            <<" valor: " << a.valor_;
-     return output;
-    }
+    friend std::ostream& operator <<( std::ostream& output, const Evento &a );
 };
 
 class Distribucion

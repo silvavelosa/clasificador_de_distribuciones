@@ -100,6 +100,13 @@ int Evento::Parse (const char* linea,
 int Evento::Parse (const string& linea, Evento& evento) {
     return Parse(linea, ';', evento);
 }
+
+std::ostream& operator<<(std::ostream& output, const Evento &a ) {
+    output << "idGrupo: "<< a.id_grupo_
+        <<" valor: " << a.valor_;
+    return output;
+}
+
 } // namespace componentes_compartidos
 } // namespace clasificador_de_distribuciones
 
