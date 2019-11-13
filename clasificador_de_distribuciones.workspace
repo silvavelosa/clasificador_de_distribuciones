@@ -2,11 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
 		<Project filename="componentes_compartidos/componentes_compartidos.cbp" />
-		<Project filename="secuencial/secuencial.cbp">
-			<Depends filename="componentes_compartidos/componentes_compartidos.cbp" />
-		</Project>
-		<Project filename="open_mp/open_mp.cbp">
-			<Depends filename="componentes_compartidos/componentes_compartidos.cbp" />
-		</Project>
+		<Project filename="secuencial/secuencial.cbp" />
+		<Project filename="open_mp/open_mp.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
