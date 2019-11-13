@@ -43,6 +43,8 @@ $(objOut)/%_test.o: test/%_test.cc
 $(objOut)/%.o: %.cc
 	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
 
+$(objOut)/entidades.o: entidades.h
+
 $(testExe): $(testObjs) $(binLib)($(libObjs))
 	g++ $(wUTppLibs) -o $@ $^ -l:libUnitTest++.a
 

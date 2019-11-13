@@ -56,9 +56,21 @@ $(libsComponentesCompartidos):
 $(objOut)/%_test.o: test/%_test.cc
 	g++ -Wall -O2 -I../ $(wUTppIncludes) -c $< -o $@
 
+$(objOut)/analizador_de_datos_secuencial_test.o: implementacion/analizador_de_datos_secuencial.h
+
+$(objOut)/manejador_de_archivos_secuencial_test.o: \
+		implementacion/manejador_de_archivos_secuencial.h
+
+
 # lib objs 
 $(objOut)/%.o: implementacion/%.cc
 	g++ -Wall -O2 -I../ -c $< -o $@
+
+$(objOut)/analizador_de_datos_secuencial.o: implementacion/analizador_de_datos_secuencial.h \
+	../componentes_compartidos/entidades.h ../componentes_compartidos/interfaces.h
+
+$(objOut)/manejador_de_archivos_secuencial.o: implementacion/manejador_de_archivos_secuencial.h \
+	../componentes_compartidos/entidades.h ../componentes_compartidos/interfaces.h
 
 # main
 $(objOut)/%.o: %.cc
@@ -77,7 +89,7 @@ $(binExe): $(binLib)($(libObjs)) $(objOut)/main.o $(libsComponentesCompartidos)
 	g++ $(wGSLLibs) -o $@ $^ -l:libgsl.a -l:libgslcblas.a
 
 cleanall:
-	$(RM) $(binLib) $(binExe) $(testExe) $(libObjs) $(testObjs) 
+	$(RM) $(binLib) $(binExe) $(testExe) $(libObjs) $(testObjs)  $(objOut)/main.o
 
 cleantest: cleanall
 
