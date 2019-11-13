@@ -46,7 +46,7 @@ class IAnalizadorDeDatos
             const Distribucion& promedio) = 0;
 
     virtual int RegresionLineal(
-            std::vector<Distribucion>& grupos);
+            std::vector<Distribucion>& grupos) = 0;
 
     virtual int OrdenarDistribuciones(
             std::unique_ptr<std::vector<Distribucion> >& grupos) = 0;
