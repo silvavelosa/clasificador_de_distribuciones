@@ -58,11 +58,11 @@ $(objOut)/%_test.o: test/%_test.cc
 
 # lib objs 
 $(objOut)/%.o: implementacion/%.cc
-	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
+	g++ -Wall -O2 -I../ -c $< -o $@
 
 # main
 $(objOut)/%.o: %.cc
-	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
+	g++ -Wall -O2 -I../ -c $< -o $@
 
 # test main
 $(testExe): $(testObjs) $(binLib)($(libObjs)) $(libsComponentesCompartidos)
