@@ -66,7 +66,7 @@ $(objOut)/%.o: %.cc
 
 # test main
 $(testExe): $(testObjs) $(binLib)($(libObjs)) $(libsComponentesCompartidos)
-	g++ $(wUTppLibs) $(wGSLLibs) -fopenmp -o $@ $^ -l:libUnitTest++.a \
+	g++ $(wUTppLibs) $(wGSLLibs) -o $@ $^ -l:libUnitTest++.a \
 		-l:libgsl.a -l:libgslcblas.a
 
 # lib
@@ -74,7 +74,7 @@ $(binLib)($(libObjs)): $(libObjs)
 
 # exe
 $(binExe): $(binLib)($(libObjs)) $(objOut)/main.o $(libsComponentesCompartidos)
-	g++ $(wGSLLibs) -fopenmp -o $@ $^ -l:libgsl.a -l:libgslcblas.a
+	g++ $(wGSLLibs) -o $@ $^ -l:libgsl.a -l:libgslcblas.a
 
 cleanall:
 	$(RM) $(binLib) $(binExe) $(testExe) $(libObjs) $(testObjs) 
