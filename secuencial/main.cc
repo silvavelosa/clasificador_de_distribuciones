@@ -17,8 +17,8 @@ int main (int argc, char** argv) {
     clock_t inicio = clock();
     clock_t inicioT = inicio;
     if (argc != 3) {
-        printf("uso: ./clasificador_de_distribuciones_secuencial archivo_entrada \
-               archivo_salida");
+        cout<<"uso: ./clasificador_de_distribuciones_secuencial archivo_entrada \
+               archivo_salida"<<endl;
         return 0;
     }
 
@@ -34,10 +34,10 @@ int main (int argc, char** argv) {
     ManejadorDeArchivosSecuencial manejador_de_archivos;
     stat = manejador_de_archivos.CargarDatos( archivo_entrada, eventos, msg);
     /*  ---
-        Después de realizar pruebas, se encontró que el tiempo de ejecucion del
-          cargue del archivo se ve afectado más por la velocidad de respuesta del
-          disco que por el procesamiento de las líneas y caracteres. Por lo tanto,
-          se decidió mantener este proceso secuencial
+        Despuï¿½s de realizar pruebas, se encontrï¿½ que el tiempo de ejecucion del
+          cargue del archivo se ve afectado mï¿½s por la velocidad de respuesta del
+          disco que por el procesamiento de las lï¿½neas y caracteres. Por lo tanto,
+          se decidiï¿½ mantener este proceso secuencial
     */
     switch (stat)
     {
@@ -46,7 +46,7 @@ int main (int argc, char** argv) {
             <<" duracion: "<<double(clock()-inicio)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
-        cout<<"El archivo "<<archivo_entrada<<" no se encontró"<<endl;
+        cout<<"El archivo "<<archivo_entrada<<" no se encontrï¿½"<<endl;
         return 0;
         break;
     case -2:
@@ -82,9 +82,9 @@ int main (int argc, char** argv) {
 
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        eventos, como las eventos de un grupo están cerca
+        eventos, como las eventos de un grupo estï¿½n cerca
         en el arreglo de eventos, los conflictos por varios hilos
-        intentado actualizar el mismo grupo se verán minimizados.
+        intentado actualizar el mismo grupo se verï¿½n minimizados.
     */
 
     switch (stat)
@@ -103,9 +103,9 @@ int main (int argc, char** argv) {
     stat = analizador_de_datos.CompararDistribuciones(*grupos, *promedio);
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        grupos, la única memoria que necesitan todos los hilos
-        es la distribución promedio, sin embargo esta sólo es leída,
-        así que no debería haber conflictos.
+        grupos, la ï¿½nica memoria que necesitan todos los hilos
+        es la distribuciï¿½n promedio, sin embargo esta sï¿½lo es leï¿½da,
+        asï¿½ que no deberï¿½a haber conflictos.
     */
     switch (stat)
     {
@@ -155,12 +155,12 @@ int main (int argc, char** argv) {
                                        msg,
                                        ManejadorDeArchivosSecuencial::reemplazar);
     /*  ---
-        No paralelizable - sólo un hilo puede escribir a la vez
+        No paralelizable - sï¿½lo un hilo puede escribir a la vez
     */
     switch (stat)
     {
     case 0:
-        cout<<"Generación de archivo de salida finalizada"
+        cout<<"Generaciï¿½n de archivo de salida finalizada"
         <<" duracion TOTAL: "<<(double)(clock()-inicioT)/CLOCKS_PER_SEC<<endl;
         break;
     case -1:
