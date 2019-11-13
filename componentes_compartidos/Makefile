@@ -16,21 +16,26 @@ endif
 .SUFFIXES:
 .SUFFIXES: .cc .o .a $(exeExt)
 
+projectName = componentes_compartidos
 binOut = bin/$(uname_S)
 binTest = bin/$(uname_S)_test
 objOut = obj/$(uname_S)
 libObjs = $(objOut)/entidades.o
+testObjs = $(objOut)/entidades_test.o $(objOut)/main_test.o
+
+testExe = $(binTest)/$(projectName)_test$(exeExt)
+binLib = $(binOut)/$(projectName).a
 
 $(info $(shell mkdir -p $(binOut) $(binTest) $(objOut)))
 
 .PHONY: all test lib cleanall cleantest cleanlib
 
-all: lib $(binTest)/componentes_compartidos_test$(exeExt)
+all: lib $(testExe)
 
-test: $(binTest)/componentes_compartidos_test$(exeExt)
-	./$(binTest)/componentes_compartidos_test
+test: $(testExe)
+	./$(testExe)
 
-lib: $(binOut)/componentes_compartidos.a($(libObjs))
+lib: $(binLib)($(libObjs))
 
 $(objOut)/%_test.o: test/%_test.cc
 	g++ -Wall -O2 -I../ $(wUTppIncludes) -c $< -o $@
@@ -38,19 +43,16 @@ $(objOut)/%_test.o: test/%_test.cc
 $(objOut)/%.o: %.cc
 	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
 
-$(binTest)/componentes_compartidos_test$(exeExt): $(objOut)/entidades_test.o \
-		$(objOut)/main_test.o $(binOut)/componentes_compartidos.a($(libObjs))
+$(testExe): $(testObjs) $(binLib)($(libObjs))
 	g++ $(wUTppLibs) -o $@ $^ -l:libUnitTest++.a
 
-$(binOut)/componentes_compartidos.a($(objOut)/entidades.o): $(objOut)/entidades.o
+$(binLib)($(libObjs)): $(libObjs)
 
 cleanall:
-	$(RM) $(binOut)/componentes_compartidos.a \
-		$(objOut)/entidades.o $(objOut)/entidades_test.o \
-		$(binTest)/componentes_compartidos_test$(exeExt)
+	$(RM) $(binLib) $(libObjs) $(testExe) $(testObjs)
 
 cleantest: cleanall
 
 cleanlib:
-	$(RM) $(binOut)/componentes_compartidos.a $(objOut)/entidades.o
+	$(RM) $(binLib) $(libObjs)
 
