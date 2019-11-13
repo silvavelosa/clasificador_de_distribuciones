@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <gsl/gsl_randist.h>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 
 #include "open_mp/implementacion/analizador_de_datos_open_mp.h"
 

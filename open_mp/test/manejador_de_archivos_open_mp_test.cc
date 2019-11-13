@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <UnitTest++.h>
+#include <UnitTest++/UnitTest++.h>
 
 #include "open_mp/implementacion/manejador_de_archivos_open_mp.h"
 
@@ -80,7 +80,7 @@ SUITE(ManejadorDeArchivosOpenMPTest)
 
     TEST (GenerarSalida)
     {
-        remove( "bin/Test/salidaPrueba.csv" );
+        remove( "test/data/salidaPrueba.csv" );
         vector<Distribucion> ciudadanos;
         ciudadanos.push_back(Distribucion(1));
         ciudadanos.push_back(Distribucion(7));
@@ -89,7 +89,7 @@ SUITE(ManejadorDeArchivosOpenMPTest)
         ciudadanos[1].EstablecerResiduo(0.5);
         ciudadanos[2].EstablecerResiduo(0.003);
 
-        string archivo = "bin/Test/salidaPrueba.csv";
+        string archivo = "test/data/salidaPrueba.csv";
         ManejadorDeArchivosOpenMP manejador;
 
         string msg;
@@ -97,7 +97,7 @@ SUITE(ManejadorDeArchivosOpenMPTest)
                         IManejadorDeArchivos::ModoDeEscritura::mantener);
 
         CHECK_EQUAL(0, stat);
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003"});
+        VerificarArchivo("test/data/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003"});
 
         stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
                         IManejadorDeArchivos::ModoDeEscritura::mantener);
@@ -110,16 +110,16 @@ SUITE(ManejadorDeArchivosOpenMPTest)
 
         CHECK_EQUAL(0, stat);
 
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003",
+        VerificarArchivo("test/data/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003",
                                     "1;1.2","7;0.5","3;0.003"});
 
         stat = manejador.GenerarSalida(archivo, ciudadanos, msg,
                         IManejadorDeArchivos::ModoDeEscritura::reemplazar);
 
         CHECK_EQUAL(0, stat);
-        VerificarArchivo("bin/Test/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003"});
+        VerificarArchivo("test/data/salidaPrueba.csv", {"1;1.2","7;0.5","3;0.003"});
 
-        remove( "bin/Test/salidaPrueba.csv" );
+        remove( "test/data/salidaPrueba.csv" );
     }
 }
 } // namespace test
