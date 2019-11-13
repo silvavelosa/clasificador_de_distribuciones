@@ -3,6 +3,7 @@
 
 #include <map>
 #include <memory>
+#include <omp.h>
 #include <vector>
 
 #include "componentes_compartidos/entidades.h"
@@ -19,12 +20,11 @@ namespace implementacion
 class AnalizadorDeDatosOpenMP: public IAnalizadorDeDatos
 {
  public:
-     AnalizadorDeDatosOpenMP(unsigned int n_hilos)
-     {
-         n_hilos_ = n_hilos;
-     }
-
-     AnalizadorDeDatosOpenMP(): AnalizadorDeDatosOpenMP(4) {}
+    AnalizadorDeDatosOpenMP(unsigned int n_hilos)
+    {
+        n_hilos_ = n_hilos;
+    }
+    AnalizadorDeDatosOpenMP(): AnalizadorDeDatosOpenMP(omp_get_num_procs()) {}
     int OrdenarEventos(
             std::unique_ptr<std::vector<Evento> >& eventos);
 

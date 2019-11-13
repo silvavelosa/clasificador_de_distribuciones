@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <omp.h>
 
 namespace clasificador_de_distribuciones
 {

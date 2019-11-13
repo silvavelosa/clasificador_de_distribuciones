@@ -7,7 +7,6 @@
 #include <sstream>
 
 #include <gsl/gsl_multifit.h>
-#include <omp.h>
 
 namespace clasificador_de_distribuciones
 {

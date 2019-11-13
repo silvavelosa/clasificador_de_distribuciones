@@ -3,6 +3,7 @@
 
 #include <map>
 #include <memory>
+#include <omp.h>
 #include <vector>
 
 #include "componentes_compartidos/entidades.h"
@@ -24,7 +25,7 @@ class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
      n_hilos_ = n_hilos;
     }
 
-    ManejadorDeArchivosOpenMP(): ManejadorDeArchivosOpenMP(4) {}
+    ManejadorDeArchivosOpenMP(): ManejadorDeArchivosOpenMP(omp_get_num_procs()) {}
     int CargarDatos( const std::string& archivo,
             std::unique_ptr<std::vector<Evento> >& eventos,
             std::string& msg);
