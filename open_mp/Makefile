@@ -11,9 +11,8 @@ ifeq ($(uname_S), Windows)
 	wUTppIncludes = -IC:/Users/silva/Documents/programacion/unittest-cpp
 	wUTppLibs = -LC:/Users/silva/Documents/programacion/unittest-cpp/Deliv/Release
 	wGSLIncludes = -IC:/Users/silva/Documents/programacion/gsl-2.6
-	define wGSLLibs = -LC:/Users/silva/Documents/programacion/gsl-2.6/.libs \
+	wGSLLibs = -LC:/Users/silva/Documents/programacion/gsl-2.6/.libs \
 		-LC:/Users/silva/Documents/programacion/gsl-2.6/cblas/.libs
-	endef
     exeExt = .exe
 endif
 
@@ -54,15 +53,15 @@ $(libsComponentesCompartidos):
 
 # test objs
 $(objOut)/%_test.o: test/%_test.cc
-	g++ -Wall -O2 -I../ $(wUTppIncludes) -c $< -o $@
+	g++ -Wall -O2 -I../ $(wGSLIncludes) $(wUTppIncludes) -c $< -o $@
 
 $(objOut)/analizador_de_datos_open_mp_test.o: implementacion/analizador_de_datos_open_mp.h
 
 $(objOut)/manejador_de_archivos_open_mp_test.o: implementacion/manejador_de_archivos_open_mp.h
 
-# lib objs 
+# lib objs
 $(objOut)/%.o: implementacion/%.cc
-	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
+	g++ -Wall -fopenmp -O2 -I../ $(wGSLIncludes) -c $< -o $@
 
 $(objOut)/analizador_de_datos_open_mp.o: implementacion/analizador_de_datos_open_mp.h \
 	../componentes_compartidos/entidades.h ../componentes_compartidos/interfaces.h
@@ -94,5 +93,5 @@ cleantest: cleanall
 cleanlib:
 	$(RM) $(binLib) $(libObjs)
 
-cleanexe: cleanlib 
+cleanexe: cleanlib
 	$(RM) $(binExe) $(objOut)/main.o
