@@ -18,7 +18,6 @@ using std::vector;
 int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
         unique_ptr<vector<Evento> >& eventos,
         string& msg) {
-    char linea[25];
     int tamano = TamanoDeArchivo(archivo);
 
     eventos.reset(new vector<Evento>);
@@ -31,40 +30,50 @@ int ManejadorDeArchivosSecuencial::CargarDatos(const string& archivo,
         return -1;
     }
 
-    size_t i;
-    for(i=1;entrada.getline(linea, 25);i++)
-    {
-        int est = Evento::Parse(linea, (*eventos)[i-1]);
+    char* contenido = (char*) malloc(tamano*sizeof(char) + 100);
+    entrada.read(contenido, tamano + 100);
+    size_t n_caracteres = entrada.gcount();
 
+    for(size_t i = n_caracteres; i< tamano + 100; i++)
+        contenido[i] = '\0';
+
+    size_t n_eventos=0,pos = 0;
+    while(pos < n_caracteres)
+    {
+        size_t avance;
+        int est = Evento::Parse(contenido+pos,';', (*eventos)[n_eventos++], &avance);
+        pos += avance+1;
         if(est != Evento::ParseResult::OK)
         {
             std::stringstream ss;
             switch(est)
             {
             case Evento::ParseResult::IdGrupoVacio:
-                ss<<"IdGrupo vacio en la linea "<<i;
+                ss<<"IdGrupo vacio en la linea "<<n_eventos;
                 break;
             case Evento::ParseResult::ValorVacio:
-                ss<<"Valor vacio en la linea "<<i;
+                ss<<"Valor vacio en la linea "<<n_eventos;
                 break;
             case Evento::ParseResult::CaracterInvalido:
-                ss<<"Caracter invalido en la linea "<<i;
+                ss<<"Caracter invalido en la linea "<<n_eventos;
                 break;
             case Evento::ParseResult::LineaIncompleta:
-                ss<<"Linea incompleta "<<i;
+                ss<<"Linea incompleta "<<n_eventos;
                 break;
             case Evento::ParseResult::DatosSobrantes:
-                ss<<"Datos sobrantes en la linea "<<i;
+                ss<<"Datos sobrantes en la linea "<<n_eventos;
                 break;
             }
             eventos.reset(nullptr);
             msg = ss.str();
+            free(contenido);
             return -2;
         }
     }
     entrada.close();
-    eventos->resize(i-1);
+    eventos->resize(n_eventos);
     eventos->shrink_to_fit();
+    free(contenido);
     return 0;
 }
 
