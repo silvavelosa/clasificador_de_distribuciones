@@ -70,16 +70,19 @@ int Evento::Parse (const char* linea,
         }
         for(; linea[i]!='\0' && linea[i]!='\n' && linea[i] == ' '; i++);
 
-        if(linea[i] == '\0' || linea[i] == separador || linea[i] == '\n')
+        if(linea[i] == '\0' || linea[i] == separador
+            || linea[i] == '\n' || linea[i] == '\r')
             return -(seccion+1);
 
-        for(; linea[i] != '\0' && linea[i]!= separador && linea[i] != '\n'; i++)
+        for(; linea[i] != '\0' && linea[i]!= separador
+                && linea[i] != '\n' && linea[i] != '\r';
+                i++)
         {
             if((linea[i] < '0' || linea[i] > '9') && linea[i] != ' ')
                 return Evento::ParseResult::CaracterInvalido;
         }
 
-        if(linea[i]!='\n' && linea[i] != '\0')
+        if(linea[i]!='\n' && linea[i] != '\r' && linea[i] != '\0')
             i++;
     }
     if(seccion == 1)
@@ -91,10 +94,11 @@ int Evento::Parse (const char* linea,
     {
         for(;linea[i] == ' '; i++);
     }
-    if(linea[i]!='\0' && linea[i] != '\n')
+    if(linea[i]!='\0' && linea[i] != '\n' && linea[i] != '\r')
     {
         return Evento::ParseResult::DatosSobrantes;
     }
+    if(linea[i] == '\r' && linea[i+1] == '\n') i++;
     if(avance != nullptr)
         *avance = i;
     return Evento::ParseResult::OK;

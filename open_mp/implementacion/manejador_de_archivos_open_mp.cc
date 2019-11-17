@@ -32,26 +32,10 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
         return manejador_sec.CargarDatos(archivo, eventos, msg);
     }
 
-
-    std::ifstream entrada(archivo);
-    if(!entrada.is_open())
-    {
-        eventos.reset(nullptr);
-        return -1;
-    }
-
     eventos.reset(new vector<Evento>);
     eventos->resize(tamano/5);
 
-    char* contenido = (char*) malloc(tamano*sizeof(char) + 100);
-
-    entrada.read(contenido, tamano + 100);
-    size_t n_caracteres = entrada.gcount();
-
-    for(size_t i = n_caracteres; i< tamano + 100; i++)
-        contenido[i] = '\0';
-
-    size_t saltar = n_caracteres/n_hilos_;
+    size_t saltar = tamano/n_hilos_;
     size_t evento_actual = 0;
     size_t tamano_real = 0;
 
@@ -59,20 +43,43 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
 
     #pragma omp parallel
     {
-        unsigned int i = omp_get_thread_num();
-        size_t caracter = 0;
+        char* contenido = (char*) malloc(saltar*sizeof(char) + 100);
+        std::ifstream entrada(archivo, ios::binary | ios::in);
+        if(!entrada.is_open())
+        {
+            ret = -1;
+        }
 
+        unsigned int i = omp_get_thread_num();
+
+
+        entrada.seekg(saltar*i, ios::beg);
+        entrada.read(contenido, saltar + 100);
+
+        if(entrada.eof())
+        {
+            for(size_t j = entrada.gcount(); j< saltar + 100; j++)
+                contenido[j] = '\0';
+        }
+        else
+            contenido[saltar+99] = '\0';
+
+        entrada.close();
+
+        size_t caracter = 0;
         if(i > 0)
         {
-            for(caracter = i*saltar;
-                contenido[caracter] != '\n' && contenido[caracter] != '\0';
+            for(;contenido[caracter] != '\n' && contenido[caracter] != '\r'
+                    && contenido[caracter] != '\0';
                 caracter++);
+            if(contenido[caracter] == '\r' && contenido[caracter+1] == '\n')
+                caracter++;
             caracter++;
         }
 
         size_t pos=100, ini=0, fin = 100;
         size_t avance;
-        while((caracter <= (i+1)* saltar || i == n_hilos_-1) && ret == 0 &&
+        while((caracter <= saltar || i == n_hilos_-1) && ret == 0 &&
             contenido[caracter] != '\0')
         {
             if(pos == fin)
@@ -80,7 +87,7 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
                 #pragma omp critical
                 {
                     pos = ini = evento_actual;
-                    evento_actual+= max(1, (int) (((i+1)*saltar)-caracter)/25);
+                    evento_actual+= max(1, (int) ((saltar-caracter)/25));
                     fin = evento_actual;
                 }
             }
@@ -93,19 +100,19 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
                 switch(est)
                 {
                 case Evento::ParseResult::IdGrupoVacio:
-                    ss<<"IdGrupo vacio en la linea "<<i;
+                    ss<<"IdGrupo vacio en la linea "<<caracter+(i*saltar);
                     break;
                 case Evento::ParseResult::ValorVacio:
-                    ss<<"Valor vacio en la linea "<<i;
+                    ss<<"Valor vacio en la linea "<<caracter+(i*saltar);
                     break;
                 case Evento::ParseResult::CaracterInvalido:
-                    ss<<"Caracter invalido en la linea "<<i;
+                    ss<<"Caracter invalido en la linea "<<caracter+(i*saltar);
                     break;
                 case Evento::ParseResult::LineaIncompleta:
-                    ss<<"Linea incompleta "<<i;
+                    ss<<"Linea incompleta "<<caracter+(i*saltar);
                     break;
                 case Evento::ParseResult::DatosSobrantes:
-                    ss<<"Datos sobrantes en la linea "<<i<<entrada.tellg();
+                    ss<<"Datos sobrantes en la linea "<<caracter+(i*saltar);
                     break;
                 }
                 msg = ss.str();
@@ -117,9 +124,9 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
         {
             tamano_real= max(tamano_real, pos);
         }
+        free(contenido);
     }
 
-    entrada.close();
     if(ret < 0)
     {
         eventos.reset(nullptr);

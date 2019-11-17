@@ -58,6 +58,9 @@
 		<Unit filename="test/analizador_de_datos_open_mp_test.cc">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="test/data/entradaPruebaGrande.csv">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="test/data/entradaPruebaNOK.csv">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>

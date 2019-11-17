@@ -76,6 +76,18 @@ SUITE(EventoTest)
         CHECK_EQUAL (123456789,res.id_grupo_);
         CHECK_EQUAL (1200,res.valor_);
         CHECK_EQUAL (14U, avance);
+        linea[14] = '\r';
+        est = Evento::Parse(linea,';',res,&avance);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK_EQUAL (123456789,res.id_grupo_);
+        CHECK_EQUAL (1200,res.valor_);
+        CHECK_EQUAL (14U, avance);
+        linea[15] = '\n';
+        est = Evento::Parse(linea,';',res,&avance);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK_EQUAL (123456789,res.id_grupo_);
+        CHECK_EQUAL (1200,res.valor_);
+        CHECK_EQUAL (15U, avance);
     }
     TEST(ParseExitoso)
     {
