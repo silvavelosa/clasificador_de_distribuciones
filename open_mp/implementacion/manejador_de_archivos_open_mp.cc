@@ -26,60 +26,66 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
     omp_set_num_threads(n_hilos_);
     int tamano = TamanoDeArchivo(archivo);
 
-    if(tamano <= 0)
-    {
-        eventos.reset(nullptr);
-        return -1;
-    }
-
     if(tamano < 10000000)
     {
         secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
         return manejador_sec.CargarDatos(archivo, eventos, msg);
     }
 
+
+    std::ifstream entrada(archivo);
+    if(!entrada.is_open())
+    {
+        eventos.reset(nullptr);
+        return -1;
+    }
+
     eventos.reset(new vector<Evento>);
     eventos->resize(tamano/5);
-    size_t saltar = tamano/n_hilos_;
-    size_t evento_actual = 0, tamano_real = 0;
+
+    char* contenido = (char*) malloc(tamano*sizeof(char) + 100);
+
+    entrada.read(contenido, tamano + 100);
+    size_t n_caracteres = entrada.gcount();
+
+    for(size_t i = n_caracteres; i< tamano + 100; i++)
+        contenido[i] = '\0';
+
+    size_t saltar = n_caracteres/n_hilos_;
+    size_t evento_actual = 0;
+    size_t tamano_real = 0;
+
     int ret =0;
 
-
-    #pragma omp parallel for schedule(dynamic, 1)
-    for(unsigned int i=0;i<n_hilos_;i++)
+    #pragma omp parallel
     {
+        unsigned int i = omp_get_thread_num();
         size_t caracter = 0;
-        std::ifstream entrada(archivo);
-        char linea[25];
 
-        if(!entrada.is_open())
+        if(i > 0)
         {
-            ret = -1;
-        }
-
-        entrada.seekg(saltar*i, ios::beg);
-
-        if(i!=0)
-        {
-            entrada.getline(linea, 25);
-            caracter += entrada.gcount();
+            for(caracter = i*saltar;
+                contenido[caracter] != '\n' && contenido[caracter] != '\0';
+                caracter++);
+            caracter++;
         }
 
         size_t pos=100, ini=0, fin = 100;
-
-        while((caracter <= saltar || i == n_hilos_-1) && ret == 0 &&
-            entrada.getline(linea, 25))
+        size_t avance;
+        while((caracter <= (i+1)* saltar || i == n_hilos_-1) && ret == 0 &&
+            contenido[caracter] != '\0')
         {
             if(pos == fin)
             {
                 #pragma omp critical
                 {
                     pos = ini = evento_actual;
-                    evento_actual+= max(1, (int) (saltar-caracter)/25);
+                    evento_actual+= max(1, (int) (((i+1)*saltar)-caracter)/25);
                     fin = evento_actual;
                 }
             }
-            int est = Evento::Parse(linea, (*eventos)[pos]);
+            int est =
+                Evento::Parse(contenido + caracter,';', (*eventos)[pos],&avance);
             pos++;
             if(est != Evento::ParseResult::OK)
             {
@@ -105,18 +111,15 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
                 msg = ss.str();
                 ret = -2;
             }
-
-            caracter += entrada.gcount();
+            caracter+=avance+1;
         }
         #pragma omp critical
         {
-            /*std::cout<<"POS:"<<pos<<" "<<i<<std::endl;
-            std::cout<<entrada.tellg()<<" "<<saltar*(i+1)<<std::endl;*/
             tamano_real= max(tamano_real, pos);
         }
-        entrada.close();
     }
 
+    entrada.close();
     if(ret < 0)
     {
         eventos.reset(nullptr);

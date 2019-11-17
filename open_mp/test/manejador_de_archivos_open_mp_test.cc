@@ -54,7 +54,7 @@ SUITE(ManejadorDeArchivosOpenMPTest)
         string msg;
         int res = manejador.CargarDatos(archivo,eventos,msg);
         REQUIRE CHECK_EQUAL(0,res);
-        CHECK_EQUAL(1600U,eventos->size());
+        CHECK_EQUAL(2003200U,eventos->size());
     }
 
     TEST(CargarDatosNOK)
