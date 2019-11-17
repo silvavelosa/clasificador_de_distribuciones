@@ -23,7 +23,7 @@ using std::vector;
 int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
         unique_ptr<vector<Evento> >& eventos,
         string& msg) {
-
+    omp_set_num_threads(n_hilos_);
     int tamano = TamanoDeArchivo(archivo);
 
     if(tamano <= 0)
@@ -133,30 +133,8 @@ int ManejadorDeArchivosOpenMP::GenerarSalida(const string& archivo,
         string& msg,
         IManejadorDeArchivos::ModoDeEscritura modo) {
 
-    int tamano = TamanoDeArchivo(archivo);
-
-    if(tamano > 0 && modo == ModoDeEscritura::mantener)
-    {
-        msg = "El archivo ya existe";
-        return -2;
-    }
-    std::ios::openmode modo_archivo = std::ios::out;
-    if(modo == ModoDeEscritura::concatenar)
-        modo_archivo |= std::ios::app;
-    else
-        modo_archivo |= std::ios::trunc;
-    std::ofstream salida (archivo, modo_archivo);
-    if(!salida.is_open())
-    {
-        return -1;
-    }
-
-    for(size_t i = 0; i< grupos.size(); i++)
-    {
-        salida<<grupos[i].Grupo()<<";"<<grupos[i].Residuo()<<std::endl;
-    }
-    salida.close();
-    return 0;
+    secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
+    return manejador_sec.GenerarSalida(archivo, grupos, msg, modo);
 }
 
 int ManejadorDeArchivosOpenMP::TamanoDeArchivo(const string& archivo)

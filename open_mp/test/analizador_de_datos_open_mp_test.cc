@@ -62,34 +62,37 @@ SUITE(AnalizadorDeDatosOpenMPTest)
     }
     TEST (OrdenarEventosPar)
     {
-        unique_ptr<vector<Evento> > eventos(new vector<Evento>());
-        vector<Evento> esperado;
-        eventos->reserve(10000);
-        esperado.reserve(10000);
-        for(int i=0;i<10000;i++)
+        for(unsigned int hilos = 2; hilos <= 8 ;hilos *=2)
         {
-            Evento x;
-            x.id_grupo_ =10001- i;
-            x.valor_ = 100;
-            eventos->push_back(x);
-            esperado.push_back(x);
-        }
-        for(int i=0;i<10000;i++)
-        {
-            Evento x;
-            x.id_grupo_ = 1;
-            x.valor_ = 10001 - i;
-            eventos->push_back(x);
-            esperado.push_back(x);
-        }
+            unique_ptr<vector<Evento> > eventos(new vector<Evento>());
+            vector<Evento> esperado;
+            eventos->reserve(20000);
+            esperado.reserve(20000);
+            for(int i=0;i<10000;i++)
+            {
+                Evento x;
+                x.id_grupo_ =10001- i;
+                x.valor_ = 100;
+                eventos->push_back(x);
+                esperado.push_back(x);
+            }
+            for(int i=0;i<10000;i++)
+            {
+                Evento x;
+                x.id_grupo_ = 1;
+                x.valor_ = 10001 - i;
+                eventos->push_back(x);
+                esperado.push_back(x);
+            }
 
-        std::sort(esperado.begin(),esperado.end());
+            std::sort(esperado.begin(),esperado.end());
 
-        AnalizadorDeDatosOpenMP analizador;
-        CHECK_EQUAL(0,analizador.OrdenarEventos(eventos));
-        CHECK_ARRAY_EQUAL(esperado, *eventos, esperado.size());
+            AnalizadorDeDatosOpenMP analizador(hilos);
+            CHECK_EQUAL(0,analizador.OrdenarEventos(eventos));
+            CHECK_ARRAY_EQUAL(esperado, *eventos, esperado.size());
+        }
     }
-    TEST(AgruparYPromediar)
+    TEST(AgruparYPromediarPar)
     {
         vector<Evento> eventos;
         Evento aux;
@@ -123,11 +126,6 @@ SUITE(AnalizadorDeDatosOpenMPTest)
         aux.valor_ = 0;
         eventos.push_back(aux);
 
-        AnalizadorDeDatosOpenMP analizador;
-        unique_ptr<vector<Distribucion> > ciudadanos;
-        unique_ptr<Distribucion> promedio;
-        int est = analizador.AgruparYPromediar(eventos, ciudadanos, promedio);
-        CHECK_EQUAL(0,est);
         vector<unsigned int> esperados[] = {{1,0,0,0,0,0,0,0,0,0,
                                     0,0,3,0,0,0,0,0,0,0,
                                     1,0,0,0,0,0,0,0,0,0,
@@ -145,16 +143,24 @@ SUITE(AnalizadorDeDatosOpenMPTest)
                                     2,0,0,0,0,1,0,0,0,0,
                                     1,0,0,0,0,0,0,0,0,3}};
         vector<unsigned int> total_esperado ={8,4,1,13};
-        for(int i=0;i<3;i++)
-        {
-            CHECK_ARRAY_EQUAL(esperados[i],(*ciudadanos)[i].Frecuencias(),
-                               Distribucion::TamanoFrecuencias());
-            CHECK_EQUAL(total_esperado[i], (*ciudadanos)[i].Total());
-        }
-        CHECK_ARRAY_EQUAL(esperados[3],promedio->Frecuencias(),
-                          Distribucion::TamanoFrecuencias());
-        CHECK_EQUAL(total_esperado[3], promedio->Total());
 
+        for(unsigned int hilos = 2; hilos <= 8 ; hilos*=2)
+        {
+            AnalizadorDeDatosOpenMP analizador(hilos);
+            unique_ptr<vector<Distribucion> > ciudadanos;
+            unique_ptr<Distribucion> promedio;
+            int est = analizador.AgruparYPromediar(eventos, ciudadanos, promedio);
+            CHECK_EQUAL(0,est);
+            for(int i=0;i<3;i++)
+            {
+                CHECK_ARRAY_EQUAL(esperados[i],(*ciudadanos)[i].Frecuencias(),
+                                   Distribucion::TamanoFrecuencias());
+                CHECK_EQUAL(total_esperado[i], (*ciudadanos)[i].Total());
+            }
+            CHECK_ARRAY_EQUAL(esperados[3],promedio->Frecuencias(),
+                              Distribucion::TamanoFrecuencias());
+            CHECK_EQUAL(total_esperado[3], promedio->Total());
+        }
     }
 
     TEST (RegresionLineal)

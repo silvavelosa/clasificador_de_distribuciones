@@ -101,7 +101,7 @@ int OrdenamientoParalelo(unique_ptr<vector<T> >& entrada, unsigned int n_hilos )
 
 int AnalizadorDeDatosOpenMP::OrdenarEventos(
         unique_ptr<vector<Evento> >& eventos) {
-
+    omp_set_num_threads(n_hilos_);
     return OrdenamientoParalelo<Evento>(eventos, n_hilos_);
 }
 
@@ -109,7 +109,7 @@ int AnalizadorDeDatosOpenMP::AgruparYPromediar(
         const vector<Evento>& eventos,
         unique_ptr<vector<Distribucion> >& grupos,
         unique_ptr<Distribucion>& promedio) {
-
+    omp_set_num_threads(n_hilos_);
     map<int,int> indice;
     vector<int> actual(n_hilos_,-1);
 
@@ -147,7 +147,7 @@ int AnalizadorDeDatosOpenMP::AgruparYPromediar(
 int AnalizadorDeDatosOpenMP::CompararDistribuciones(
         vector<Distribucion>& grupos,
         const Distribucion& promedio) {
-
+    omp_set_num_threads(n_hilos_);
     #pragma omp parallel for schedule(dynamic, 10)
     for(size_t i=0;i<grupos.size();i++)
     {
@@ -227,6 +227,7 @@ public:
 
 int AnalizadorDeDatosOpenMP::OrdenarDistribuciones(
         unique_ptr<vector<Distribucion> >& grupos) {
+    omp_set_num_threads(n_hilos_);
     return OrdenamientoParalelo<Distribucion,OrdenarPorResiduo>(grupos, n_hilos_);
 }
 } // namespace implementacion

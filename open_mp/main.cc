@@ -39,9 +39,6 @@ int main (int argc, char** argv) {
     {
         nth = atoi(argv[3]);
     }
-
-    omp_set_num_threads(nth);
-
     ManejadorDeArchivosOpenMP manejador_de_archivos(nth);
     stat = manejador_de_archivos.CargarDatos( archivo_entrada, eventos, msg);
     /*  +++
