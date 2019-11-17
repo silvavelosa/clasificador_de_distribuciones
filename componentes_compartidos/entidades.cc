@@ -51,9 +51,10 @@ int Evento::Parse (const string& linea,
 
 int Evento::Parse (const char* linea,
         char separador,
-        Evento& evento)
+        Evento& evento,
+        size_t* avance)
 {
-    size_t i=0;
+    size_t i = 0;
     int seccion = 0;
     for(seccion = 0; seccion < 2 && linea[i]!= '\0' && linea[i] != '\n'; seccion++)
     {
@@ -94,6 +95,8 @@ int Evento::Parse (const char* linea,
     {
         return Evento::ParseResult::DatosSobrantes;
     }
+    if(avance != nullptr)
+        *avance = i;
     return Evento::ParseResult::OK;
 }
 

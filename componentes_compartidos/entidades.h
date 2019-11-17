@@ -31,7 +31,8 @@ class Evento
             Evento& evento);
     static int Parse (const char* linea,
             char separador,
-            Evento& evento);
+            Evento& evento,
+            size_t* avance = nullptr);
     const bool operator < (const Evento& a) const
     {
         return  id_grupo_<a.id_grupo_ ||

@@ -60,6 +60,23 @@ SUITE(EventoTest)
         CHECK_EQUAL("idGrupo: 123456 valor: 1000",salida.str());
 
     }
+    TEST(ParseExitosoTam)
+    {
+        char linea[25] = "123456789;1200";
+        Evento res;
+        size_t avance;
+        int est = Evento::Parse(linea,';',res,&avance);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK_EQUAL (123456789,res.id_grupo_);
+        CHECK_EQUAL (1200,res.valor_);
+        CHECK_EQUAL (14U, avance);
+        linea[14] = '\n';
+        est = Evento::Parse(linea,';',res,&avance);
+        REQUIRE CHECK_EQUAL(Evento::ParseResult::OK, est);
+        CHECK_EQUAL (123456789,res.id_grupo_);
+        CHECK_EQUAL (1200,res.valor_);
+        CHECK_EQUAL (14U, avance);
+    }
     TEST(ParseExitoso)
     {
         string linea = "123456789;1200";
