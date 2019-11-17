@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
+
 namespace clasificador_de_distribuciones
 {
 namespace open_mp
@@ -32,53 +34,8 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
 
     if(tamano < 10000)
     {
-        std::ifstream entrada(archivo);
-        char linea[25];
-
-        if(!entrada.is_open())
-        {
-            eventos.reset(nullptr);
-            return -1;
-        }
-
-        eventos.reset(new vector<Evento>);
-        eventos->resize(tamano/5);
-
-        size_t i;
-        for(i=1;entrada.getline(linea, 25);i++)
-        {
-            int est = Evento::Parse(linea, (*eventos)[i-1]);
-
-            if(est != Evento::ParseResult::OK)
-            {
-                std::stringstream ss;
-                switch(est)
-                {
-                case Evento::ParseResult::IdGrupoVacio:
-                    ss<<"IdGrupo vacio en la linea "<<i;
-                    break;
-                case Evento::ParseResult::ValorVacio:
-                    ss<<"Valor vacio en la linea "<<i;
-                    break;
-                case Evento::ParseResult::CaracterInvalido:
-                    ss<<"Caracter invalido en la linea "<<i;
-                    break;
-                case Evento::ParseResult::LineaIncompleta:
-                    ss<<"Linea incompleta "<<i;
-                    break;
-                case Evento::ParseResult::DatosSobrantes:
-                    ss<<"Datos sobrantes en la linea "<<i;
-                    break;
-                }
-                eventos.reset(nullptr);
-                msg = ss.str();
-                return -2;
-            }
-        }
-        entrada.close();
-        eventos->resize(i-1);
-        eventos->shrink_to_fit();
-        return 0;
+        secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
+        return manejador_sec.CargarDatos(archivo, eventos, msg);
     }
 
     eventos.reset(new vector<Evento>);

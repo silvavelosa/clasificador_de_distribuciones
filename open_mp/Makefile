@@ -32,6 +32,9 @@ testObjs = $(objOut)/analizador_de_datos_open_mp_test.o \
 cmpCompartidos = ../componentes_compartidos
 libsComponentesCompartidos = \
 	$(cmpCompartidos)/$(binOut)/componentes_compartidos.a
+secuencial = ../secuencial
+impSecuencial = $(secuencial)/implementacion
+libsSecuencial = $(secuencial)/$(binOut)/clasificador_de_distribuciones_secuencial.a
 
 testExe = $(binTest)/$(projectName)_test$(exeExt)
 binLib = $(binOut)/$(projectName).a
@@ -51,7 +54,10 @@ lib: $(binLib)($(libObjs))
 exe: $(binExe)
 
 $(libsComponentesCompartidos):
-	$(MAKE) -C $(cmpCompartidos)
+	$(MAKE) -C $(cmpCompartidos) lib
+
+$(libsSecuencial):
+	$(MAKE) -C $(secuencial) lib
 
 # test objs
 $(objOut)/%_test.o: test/%_test.cc
@@ -69,28 +75,33 @@ $(objOut)/%.o: implementacion/%.cc
 
 $(objOut)/analizador_de_datos_open_mp.o: \
 		implementacion/analizador_de_datos_open_mp.h \
-		../componentes_compartidos/entidades.h \
-		../componentes_compartidos/interfaces.h
+		$(cmpCompartidos)/entidades.h \
+		$(cmpCompartidos)/interfaces.h
 
 $(objOut)/manejador_de_archivos_open_mp.o: \
 		implementacion/manejador_de_archivos_open_mp.h \
-		../componentes_compartidos/entidades.h \
-		../componentes_compartidos/interfaces.h
+		$(cmpCompartidos)/entidades.h \
+		$(cmpCompartidos)/interfaces.h \
+		../secuencial/implementacion/manejador_de_archivos_secuencial.h
 
 # main
 $(objOut)/%.o: %.cc
 	g++ -Wall -fopenmp -O2 -I../ -c $< -o $@
 
 # test main
-$(testExe): $(testObjs) $(binLib)($(libObjs)) $(libsComponentesCompartidos)
+$(testExe): $(testObjs) $(binLib)($(libObjs)) $(binLib)($(libsSecuencial)) \
+		$(libsComponentesCompartidos)
 	g++ $(wUTppLibs) $(wGSLLibs) -fopenmp -o $@ $^ -l:libUnitTest++.a \
 		-l:libgsl.a -l:libgslcblas.a
 
 # lib
 $(binLib)($(libObjs)): $(libObjs)
 
+$(binLib)($(libsSecuencial)): $(libsSecuencial)
+
 # exe
-$(binExe): $(binLib)($(libObjs)) $(objOut)/main.o $(libsComponentesCompartidos)
+$(binExe): $(binLib)($(libObjs)) $(binLib)($(libsSecuencial)) \
+		$(objOut)/main.o $(libsComponentesCompartidos)
 	g++ $(wGSLLibs) -fopenmp -o $@ $^ -l:libgsl.a -l:libgslcblas.a
 
 cleanall:
