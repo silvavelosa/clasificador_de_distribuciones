@@ -32,7 +32,7 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
         return -1;
     }
 
-    if(tamano < 10000)
+    if(tamano < 10000000)
     {
         secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
         return manejador_sec.CargarDatos(archivo, eventos, msg);
