@@ -162,7 +162,6 @@ int AnalizadorDeDatosOpenMP::AgruparYPromediar(
         g.back().AnadirEvento(eventos[i]);
         p.AnadirEvento(eventos[i]);
     }
-    grupos->shrink_to_fit();
     return 0;
 }
 

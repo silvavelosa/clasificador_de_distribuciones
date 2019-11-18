@@ -42,7 +42,8 @@ binExe = $(binOut)/$(projectName)$(exeExt)
 
 $(info $(shell mkdir -p $(binOut) $(binTest) $(objOut)))
 
-.PHONY: all test lib exe cleanall cleantest cleanlib cleanexe
+.PHONY: all test lib exe cleanall cleantest cleanlib cleanexe secuenciallib \
+		componentescompartidoslib
 
 all: lib exe $(testExe)
 
@@ -53,10 +54,14 @@ lib: $(binLib)($(libObjs))
 
 exe: $(binExe)
 
-$(libsComponentesCompartidos):
+$(libsComponentesCompartidos): componentescompartidoslib
+
+componentescompartidoslib:
 	$(MAKE) -C $(cmpCompartidos) lib
 
-$(libsSecuencial):
+$(libsSecuencial): secuenciallib
+
+secuenciallib:
 	$(MAKE) -C $(secuencial) lib
 
 # test objs
