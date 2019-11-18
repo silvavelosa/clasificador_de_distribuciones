@@ -90,6 +90,12 @@ class Distribucion
             total_ += (*frecuencias_)[i];
 
     }
+    void operator += (const Distribucion& b) 
+    {
+        for(size_t i = 0; i < tamano_frecuencias_; i++)
+            (*frecuencias_)[i]+=(*b.frecuencias_)[i];
+        total_ += b.total_;
+    }
 
     double FrecuenciaRelativa (int i) const
     {

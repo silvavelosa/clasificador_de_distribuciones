@@ -22,6 +22,37 @@ using std::string;
 using std::unique_ptr;
 using std::vector;
 
+vector<Distribucion> merge (vector<Distribucion>& a,
+                                vector <Distribucion>& b)
+{
+    vector<Distribucion> ret;
+    ret.reserve(a.size() + b.size());
+    size_t l,r;
+    l=r=0;
+    while( l < a.size() || r < b.size() )
+    {
+        if ( l == a.size() || (r < b.size() && b[r].Grupo() < a[l].Grupo() ) )
+        {
+            ret.push_back( std::move( b[r] ) );
+            r++;
+        }
+        else if ( r == b.size() || a[l].Grupo() < b[r].Grupo() )
+        {
+            ret.push_back( std::move( a[l] ) );
+            l++;
+        }
+        else
+        {
+            ret.push_back( std::move( a[l] ) );
+            ret.back() += b[r];
+            r++;
+            l++;
+        }
+    }
+    ret.shrink_to_fit();
+    return ret;
+}
+
 template<typename T, class Compare = std::less<T> >
 int OrdenamientoParalelo(unique_ptr<vector<T> >& entrada, unsigned int n_hilos )
 {
@@ -110,37 +141,28 @@ int AnalizadorDeDatosOpenMP::AgruparYPromediar(
         unique_ptr<vector<Distribucion> >& grupos,
         unique_ptr<Distribucion>& promedio) {
     omp_set_num_threads(n_hilos_);
-    map<int,int> indice;
-    vector<int> actual(n_hilos_,-1);
 
     promedio.reset(new Distribucion());
+    Distribucion& p = *promedio;
     grupos.reset(new vector<Distribucion> ());
+    vector<Distribucion>& g = *grupos;
 
-    #pragma omp for schedule(dynamic, 100)
-    for(unsigned int i=0;i<eventos.size();i++)
+    #pragma omp declare reduction(+ : Distribucion : omp_out += omp_in ) 
+    #pragma omp declare reduction(merge : vector<Distribucion> : \
+                    omp_out = merge( omp_out, omp_in )  )
+    #pragma omp parallel for reduction(+: p) \
+                                reduction(merge: g) \
+                                schedule(dynamic, 100000)
+    for(size_t i=0;i<eventos.size();i++)
     {
-        int id_hilo = omp_get_thread_num();
-        if(actual[id_hilo] == -1 ||
-           (*grupos)[actual[id_hilo]].Grupo() != eventos[i].id_grupo_)
+        if(g.empty() || g.back().Grupo() != eventos[i].id_grupo_)
         {
-            #pragma omp critical
-            {
-                map<int,int>::iterator it = indice.find(eventos[i].id_grupo_);
-                if(it == indice.end())
-                {
-                    grupos->push_back(Distribucion(eventos[i].id_grupo_));
-                    indice[eventos[i].id_grupo_] = grupos->size()-1;
-                    actual[id_hilo] = grupos->size()-1;
-                }
-                else
-                {
-                    actual[id_hilo] = it->second;
-                }
-            }
+            g.push_back(Distribucion(eventos[i].id_grupo_));
         }
-        (*grupos)[actual[id_hilo]].AnadirEvento(eventos[i]);
-        promedio->AnadirEvento(eventos[i]);
+        g.back().AnadirEvento(eventos[i]);
+        p.AnadirEvento(eventos[i]);
     }
+    grupos->shrink_to_fit();
     return 0;
 }
 

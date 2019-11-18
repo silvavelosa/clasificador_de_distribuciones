@@ -13,14 +13,12 @@ using namespace std;
 
 
 int main (int argc, char** argv) {
-
-    clock_t inicio = clock();
-    clock_t inicioT = inicio;
     if (argc != 3) {
         cout<<"uso: ./clasificador_de_distribuciones_secuencial archivo_entrada \
                archivo_salida"<<endl;
         return 0;
     }
+    cout<<"Iniciando lectura de archivo:"<<endl;
 
     Distribucion::EstablecerTamanoFrecuencias(24);
     Distribucion::EstablecerTamanoIntervalos(1);
@@ -42,8 +40,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Lectura finalizada - total eventos: "<<eventos->size()
-            <<" duracion: "<<double(clock()-inicio)/CLOCKS_PER_SEC<<endl;
+        cout<<"Lectura finalizada - total eventos: "<<eventos->size()<<endl;
         break;
     case -1:
         cout<<"El archivo "<<archivo_entrada<<" no se encontr�"<<endl;
@@ -54,7 +51,6 @@ int main (int argc, char** argv) {
         return 0;
         break;
     }
-    inicio = clock();
     AnalizadorDeDatosSecuencial analizador_de_datos;
     stat = analizador_de_datos.OrdenarEventos(eventos);
     /*  +++
@@ -64,8 +60,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Ordenamiento de eventos finalizado"
-            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
+        cout<<"Ordenamiento de eventos finalizado"<<endl;
         break;
     case -1:
         cout<<"Error al ordenar:"<<endl;
@@ -160,8 +155,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Generaci�n de archivo de salida finalizada"
-        <<" duracion TOTAL: "<<(double)(clock()-inicioT)/CLOCKS_PER_SEC<<endl;
+        cout<<"Generaci�n de archivo de salida finalizada"<<endl;
         break;
     case -1:
         cout<<"Error al generar archivo de salida:"<<endl<<msg<<endl;

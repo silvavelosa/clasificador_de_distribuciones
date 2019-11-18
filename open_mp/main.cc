@@ -16,8 +16,6 @@ using namespace std;
 
 int main (int argc, char** argv) {
 
-    clock_t inicioT = clock();
-    clock_t inicio = inicioT;
     Distribucion::EstablecerTamanoFrecuencias(24);
     Distribucion::EstablecerTamanoIntervalos(1);
     if (argc < 3 || argc > 4) {
@@ -27,6 +25,7 @@ int main (int argc, char** argv) {
             <<"[hilos]"<<endl;
         return 0;
     }
+    cout<<"Iniciando lectura de archivo:"<<endl;
 
     int stat= 0;
     string msg;
@@ -48,12 +47,11 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Lectura finalizada - total eventos: "<<eventos->size()
-            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
+        cout<<"Lectura finalizada - total eventos: "<<eventos->size()<<endl;
 
         break;
     case -1:
-        cout<<"El archivo "<<archivo_entrada<<" no se encontró"<<endl;
+        cout<<"El archivo "<<archivo_entrada<<" no se encontrï¿½"<<endl;
         return 0;
         break;
     case -2:
@@ -61,7 +59,6 @@ int main (int argc, char** argv) {
         return 0;
         break;
     }
-    inicio = clock();
     AnalizadorDeDatosOpenMP analizador_de_datos(nth);
     stat = analizador_de_datos.OrdenarEventos(eventos);
     /*  +++
@@ -71,8 +68,7 @@ int main (int argc, char** argv) {
     switch (stat)
     {
     case 0:
-        cout<<"Ordenamiento de eventos finalizado"
-            <<" duracion: "<<(double)(clock()-inicio)/CLOCKS_PER_SEC<<endl;
+        cout<<"Ordenamiento de eventos finalizado"<<endl;
         break;
     case -1:
         cout<<"Error al ordenar:"<<endl;
@@ -89,9 +85,9 @@ int main (int argc, char** argv) {
 
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        eventos, como las eventos de un grupo están cerca
+        eventos, como las eventos de un grupo estï¿½n cerca
         en el arreglo de eventos, los conflictos por varios hilos
-        intentado actualizar el mismo grupo se verán minimizados.
+        intentado actualizar el mismo grupo se verï¿½n minimizados.
     */
 
     switch (stat)
@@ -106,13 +102,13 @@ int main (int argc, char** argv) {
         return 0;
         break;
     }
-
+    
     stat = analizador_de_datos.CompararDistribuciones(*grupos, *promedio);
     /*  +++
         Paralelizacion por datos, cada hilo puede procesar un lote de
-        grupos, la única memoria que necesitan todos los hilos
-        es la distribución promedio, sin embargo esta sólo es leída,
-        así que no debería haber conflictos.
+        grupos, la ï¿½nica memoria que necesitan todos los hilos
+        es la distribuciï¿½n promedio, sin embargo esta sï¿½lo es leï¿½da,
+        asï¿½ que no deberï¿½a haber conflictos.
     */
     switch (stat)
     {
@@ -162,13 +158,12 @@ int main (int argc, char** argv) {
                                                msg,
                                                ManejadorDeArchivosOpenMP::reemplazar);
     /*  ---
-        No paralelizable - sólo un hilo puede escribir a la vez
+        No paralelizable - sï¿½lo un hilo puede escribir a la vez
     */
     switch (stat)
     {
     case 0:
-        cout<<"Generación de archivo de salida finalizada"
-        <<" duracion TOTAL: "<<(double)(clock()-inicioT)/CLOCKS_PER_SEC<<endl;
+        cout<<"Generaciï¿½n de archivo de salida finalizada"<<endl;
         break;
     case -1:
         cout<<"Error al generar archivo de salida:"<<endl<<msg<<endl;
