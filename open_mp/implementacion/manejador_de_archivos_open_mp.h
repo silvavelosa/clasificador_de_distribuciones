@@ -37,7 +37,6 @@ class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
                 = IManejadorDeArchivos::ModoDeEscritura::mantener);
 
  private:
-    int TamanoDeArchivo (const std::string& archivo);
     unsigned int n_hilos_;
 };
 } // namespace implementacion

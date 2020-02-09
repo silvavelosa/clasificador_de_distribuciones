@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
+#include "componentes_compartidos/util_archivos.h"
 
 namespace clasificador_de_distribuciones
 {
@@ -145,21 +146,6 @@ int ManejadorDeArchivosOpenMP::GenerarSalida(const string& archivo,
 
     secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
     return manejador_sec.GenerarSalida(archivo, grupos, msg, modo);
-}
-
-int ManejadorDeArchivosOpenMP::TamanoDeArchivo(const string& archivo)
-{
-
-    std::ifstream entrada (archivo, std::ios::binary);
-    if(!entrada.is_open())
-    {
-        return -1;
-    }
-    std::streampos ini = entrada.tellg();
-    entrada.seekg (0, std::ios::end);
-    std::streampos fin = entrada.tellg();
-    entrada.close();
-    return fin-ini;
 }
 } // namespace implementacion
 } // namespace open_mp

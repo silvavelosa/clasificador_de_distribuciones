@@ -73,13 +73,14 @@ $(objOut)/%.o: implementacion/%.cc
 
 $(objOut)/analizador_de_datos_secuencial.o: \
 		implementacion/analizador_de_datos_secuencial.h \
-		../componentes_compartidos/entidades.h \
-		../componentes_compartidos/interfaces.h
+		$(cmpCompartidos)/entidades.h \
+		$(cmpCompartidos)/interfaces.h
 
 $(objOut)/manejador_de_archivos_secuencial.o: \
 		implementacion/manejador_de_archivos_secuencial.h \
-		../componentes_compartidos/entidades.h \
-		../componentes_compartidos/interfaces.h
+		$(cmpCompartidos)/entidades.h \
+		$(cmpCompartidos)/interfaces.h \
+		$(cmpCompartidos)/util_archivos.h
 
 # main
 $(objOut)/%.o: %.cc

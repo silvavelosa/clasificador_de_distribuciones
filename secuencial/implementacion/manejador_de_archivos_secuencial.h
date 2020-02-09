@@ -1,7 +1,6 @@
 #ifndef CLASIFICADOR_DE_DISTRIBUCIONES_SECUENCIAL_IMPLEMENTACION_MANEJADOR_DE_ARCHIVOS_SECUENCIAL_H_
 #define CLASIFICADOR_DE_DISTRIBUCIONES_SECUENCIAL_IMPLEMENTACION_MANEJADOR_DE_ARCHIVOS_SECUENCIAL_H_
 
-#include <map>
 #include <memory>
 #include <vector>
 
@@ -28,9 +27,6 @@ class ManejadorDeArchivosSecuencial: public IManejadorDeArchivos
             std::string& msg,
             IManejadorDeArchivos::ModoDeEscritura modo
                 = IManejadorDeArchivos::ModoDeEscritura::mantener);
-
- private:
-    int TamanoDeArchivo (const std::string& archivo);
 };
 } // namespace implementacion
 } // namespace secuencial
