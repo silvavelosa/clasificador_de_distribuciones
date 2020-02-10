@@ -50,11 +50,9 @@ int ManejadorDeArchivosCuda::CargarDatos(const string& archivo,
     char* archivo_device;
     cudaMalloc( (void**) &archivo_device, tamano*sizeof(char));
     char* archivo_host = (char*) malloc(tamano*sizeof(char));
-    std::cout<<"Leyendo Archivo"<<std::endl;
 
     entrada.read(archivo_host, tamano);
 
-    std::cout<<"Copiando Archivo"<<std::endl;
     if(checkCUDAError("Reservando archivo GPU", msg))
         return -2;
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cuda" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option default_target="all" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="all">
+				<Option type="4" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="test">
+				<Option type="4" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="lib">
+				<Option output="cuda" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="exe">
+				<Option output="cuda" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+			</Target>
+		</Build>
+		<Unit filename="Makefile">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="implementacion/analizador_de_datos_cuda.cc">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="implementacion/analizador_de_datos_cuda.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="implementacion/manejador_de_archivos_cuda.cc">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="main.cc">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="test/analizador_de_datos_cuda_test.cc">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="test/data/entradaPruebaNOK.csv">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="test/data/entradaPruebaOK.csv">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="test/main_test.cc">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
