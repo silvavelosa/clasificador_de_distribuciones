@@ -8,7 +8,6 @@
 #include "componentes_compartidos/util_archivos.h"
 #include "cuda/implementacion/util_cuda.h"
 #include "cuda/implementacion/kernel.h"
-#include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 
 namespace clasificador_de_distribuciones
 {
@@ -35,6 +34,11 @@ int ManejadorDeArchivosCuda::CargarDatos(const string& archivo,
         eventos.reset(nullptr);
         msg = "El archivo no pudo ser leído o está vacío";
         return -1;
+    }
+
+    if(tamano < 10000000)
+    {
+        return manejador_sec_.CargarDatos(archivo, eventos, msg);
     }
 
     std::ifstream entrada(archivo, std::ios::binary | std::ios::in);
@@ -110,13 +114,6 @@ int ManejadorDeArchivosCuda::CargarDatos(const string& archivo,
     }
     eventos->resize(total_eventos);
     return 0;
-}
-
-int ManejadorDeArchivosCuda::GenerarSalida(const string& archivo,
-        const vector<Distribucion>& grupos,
-        string& msg,
-        IManejadorDeArchivos::ModoDeEscritura modo) {
-    return manejador_sec_.GenerarSalida(archivo, grupos, msg, modo);
 }
 } // namespace implementacion
 } // namespace open_mp

@@ -28,7 +28,9 @@ class ManejadorDeArchivosCuda: public IManejadorDeArchivos
             const std::vector<Distribucion>& indice,
             std::string& msg,
             IManejadorDeArchivos::ModoDeEscritura modo
-                = IManejadorDeArchivos::ModoDeEscritura::mantener);
+                = IManejadorDeArchivos::ModoDeEscritura::mantener) {
+        return manejador_sec_.GenerarSalida(archivo, indice, msg, modo);
+    }
 
  private:
     secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec_;
