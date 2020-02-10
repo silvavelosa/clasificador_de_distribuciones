@@ -25,7 +25,7 @@ binOut = bin/$(uname_S)
 binTest = bin/$(uname_S)_test
 objOut = obj/$(uname_S)
 libObjs = $(objOut)/util_cuda.o \
-	$(objOut)/kernel.o \
+	$(objOut)/kernel_procesar_archivo.o \
 	$(objOut)/analizador_de_datos_cuda.o \
 	$(objOut)/manejador_de_archivos_cuda.o 
 testObjs = $(objOut)/analizador_de_datos_cuda_test.o \
@@ -85,14 +85,14 @@ $(objOut)/%.o: implementacion/%.cu
 
 $(objOut)/analizador_de_datos_cuda.o: \
 	implementacion/analizador_de_datos_cuda.h \
-	implementacion/kernel.h \
+	implementacion/kernel_procesar_archivo.h \
 	$(cmpCompartidos)/entidades.h \
 	$(cmpCompartidos)/interfaces.h \
 	$(impSecuencial)/analizador_de_datos_secuencial.h
 
 $(objOut)/manejador_de_archivos_cuda.o: \
 	implementacion/manejador_de_archivos_cuda.h \
-	implementacion/kernel.h \
+	implementacion/kernel_procesar_archivo.h \
 	$(cmpCompartidos)/entidades.h \
 	$(cmpCompartidos)/interfaces.h \
 	$(cmpCompartidos)/util_archivos.h \
@@ -100,7 +100,7 @@ $(objOut)/manejador_de_archivos_cuda.o: \
 
 $(objOut)/util_cuda.o: implementacion/util_cuda.h
 
-$(objOut)/kernel.o: implementacion/kernel.h
+$(objOut)/kernel_procesar_archivo.o: implementacion/kernel_procesar_archivo.h
 
 # main
 $(objOut)/%.o: %.cc

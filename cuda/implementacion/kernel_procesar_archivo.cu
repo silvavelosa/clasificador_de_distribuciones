@@ -1,4 +1,4 @@
-#include "cuda/implementacion/kernel.h"
+#include "cuda/implementacion/kernel_procesar_archivo.h"
 
 namespace clasificador_de_distribuciones
 {
