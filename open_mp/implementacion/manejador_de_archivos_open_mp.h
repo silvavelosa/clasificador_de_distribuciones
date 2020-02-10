@@ -8,6 +8,7 @@
 
 #include "componentes_compartidos/entidades.h"
 #include "componentes_compartidos/interfaces.h"
+#include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 
 namespace clasificador_de_distribuciones
 {
@@ -38,6 +39,7 @@ class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
 
  private:
     unsigned int n_hilos_;
+    secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec_;
 };
 } // namespace implementacion
 } // namespace open_mp

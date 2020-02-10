@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "secuencial/implementacion/manejador_de_archivos_secuencial.h"
 #include "componentes_compartidos/util_archivos.h"
 
 namespace clasificador_de_distribuciones
@@ -143,9 +142,7 @@ int ManejadorDeArchivosOpenMP::GenerarSalida(const string& archivo,
         const vector<Distribucion>& grupos,
         string& msg,
         IManejadorDeArchivos::ModoDeEscritura modo) {
-
-    secuencial::implementacion::ManejadorDeArchivosSecuencial manejador_sec;
-    return manejador_sec.GenerarSalida(archivo, grupos, msg, modo);
+    return manejador_sec_.GenerarSalida(archivo, grupos, msg, modo);
 }
 } // namespace implementacion
 } // namespace open_mp

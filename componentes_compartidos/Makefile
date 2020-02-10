@@ -20,7 +20,7 @@ projectName = componentes_compartidos
 binOut = bin/$(uname_S)
 binTest = bin/$(uname_S)_test
 objOut = obj/$(uname_S)
-libObjs = $(objOut)/entidades.o
+libObjs = $(objOut)/entidades.o $(objOut)/util_archivos.o
 testObjs = $(objOut)/entidades_test.o $(objOut)/main_test.o
 
 testExe = $(binTest)/$(projectName)_test$(exeExt)

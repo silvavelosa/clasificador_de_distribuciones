@@ -87,7 +87,7 @@ $(objOut)/manejador_de_archivos_open_mp.o: \
 		implementacion/manejador_de_archivos_open_mp.h \
 		$(cmpCompartidos)/entidades.h \
 		$(cmpCompartidos)/interfaces.h \
-		$(cmpCompartidos)/util_archivos.h
+		$(cmpCompartidos)/util_archivos.h \
 		$(secuencial)/implementacion/manejador_de_archivos_secuencial.h
 
 # main
