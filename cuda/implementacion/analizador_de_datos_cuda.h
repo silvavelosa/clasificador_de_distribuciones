@@ -7,6 +7,7 @@
 
 #include "componentes_compartidos/entidades.h"
 #include "componentes_compartidos/interfaces.h"
+#include "secuencial/implementacion/analizador_de_datos_secuencial.h"
 
 namespace clasificador_de_distribuciones
 {
@@ -32,10 +33,14 @@ class AnalizadorDeDatosCuda: public IAnalizadorDeDatos
             const Distribucion& promedio);
 
     int RegresionLineal(
-            std::vector<Distribucion>& grupos);
+            std::vector<Distribucion>& grupos) {
+        return analizador_sec.RegresionLineal(grupos);
+    }
 
     int OrdenarDistribuciones(
             std::unique_ptr<std::vector<Distribucion> >& grupos);
+ private:
+    secuencial::implementacion::AnalizadorDeDatosSecuencial analizador_sec;
 };
 } // namespace implementacion
 } // namespace cuda
