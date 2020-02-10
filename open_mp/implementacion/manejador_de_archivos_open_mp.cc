@@ -137,13 +137,6 @@ int ManejadorDeArchivosOpenMP::CargarDatos(const string& archivo,
     eventos->shrink_to_fit();
     return 0;
 }
-
-int ManejadorDeArchivosOpenMP::GenerarSalida(const string& archivo,
-        const vector<Distribucion>& grupos,
-        string& msg,
-        IManejadorDeArchivos::ModoDeEscritura modo) {
-    return manejador_sec_.GenerarSalida(archivo, grupos, msg, modo);
-}
 } // namespace implementacion
 } // namespace open_mp
 } // namespace clasificador_de_distribuciones

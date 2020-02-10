@@ -23,19 +23,24 @@ class ManejadorDeArchivosOpenMP: public IManejadorDeArchivos
  public:
     ManejadorDeArchivosOpenMP(unsigned int n_hilos)
     {
-     n_hilos_ = n_hilos;
+        n_hilos_ = n_hilos;
     }
 
-    ManejadorDeArchivosOpenMP(): ManejadorDeArchivosOpenMP(omp_get_num_procs()) {}
+    ManejadorDeArchivosOpenMP(): ManejadorDeArchivosOpenMP(omp_get_num_procs())
+    {}
+    
     int CargarDatos( const std::string& archivo,
-            std::unique_ptr<std::vector<Evento> >& eventos,
-            std::string& msg);
+                std::unique_ptr<std::vector<Evento> >& eventos,
+                std::string& msg);
 
     int GenerarSalida( const std::string& archivo,
-            const std::vector<Distribucion>& indice,
-            std::string& msg,
-            IManejadorDeArchivos::ModoDeEscritura modo
-                = IManejadorDeArchivos::ModoDeEscritura::mantener);
+                const std::vector<Distribucion>& indice,
+                std::string& msg,
+                IManejadorDeArchivos::ModoDeEscritura modo
+                        = IManejadorDeArchivos::ModoDeEscritura::mantener) {
+        return manejador_sec_.GenerarSalida(archivo, indice, msg, modo);
+    }
+
 
  private:
     unsigned int n_hilos_;
