@@ -1,6 +1,11 @@
 #ifndef CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 #define CLASIFICADOR_DE_DISTRIBUCIONES_COMPONENTES_COMPARTIDOS_ENTIDADES_H_
 
+#ifndef __CUDACC__
+#define __device__
+#define __host__
+#endif
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -33,12 +38,18 @@ class Evento
             char separador,
             Evento& evento,
             size_t* avance = nullptr);
-    const bool operator < (const Evento& a) const
+    __device__ __host__ Evento& operator= ( const Evento& a)
+    {
+        id_grupo_ = a.id_grupo_;
+        valor_ = a.valor_;
+        return *this;
+    }
+    __device__ __host__ bool operator < (const Evento& a) const
     {
         return  id_grupo_<a.id_grupo_ ||
             (id_grupo_ == a.id_grupo_ && valor_ < a.valor_);
     }
-    const bool operator == (const Evento& a) const
+    __device__ __host__ bool operator == (const Evento& a) const
     {
         return  id_grupo_ == a.id_grupo_ && valor_ == a.valor_;
     }
