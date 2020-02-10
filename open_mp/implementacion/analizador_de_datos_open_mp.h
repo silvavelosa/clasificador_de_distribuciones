@@ -8,6 +8,7 @@
 
 #include "componentes_compartidos/entidades.h"
 #include "componentes_compartidos/interfaces.h"
+#include "secuencial/implementacion/analizador_de_datos_secuencial.h"
 
 namespace clasificador_de_distribuciones
 {
@@ -37,13 +38,15 @@ class AnalizadorDeDatosOpenMP: public IAnalizadorDeDatos
             std::vector<Distribucion>& grupos,
             const Distribucion& promedio);
 
-    int RegresionLineal(
-            std::vector<Distribucion>& grupos);
+    int RegresionLineal(std::vector<Distribucion>& grupos) {
+        return analizador_sec_.RegresionLineal(grupos);
+    }
 
     int OrdenarDistribuciones(
             std::unique_ptr<std::vector<Distribucion> >& grupos);
  private:
     unsigned int n_hilos_;
+    secuencial::implementacion::AnalizadorDeDatosSecuencial analizador_sec_;
 };
 } // namespace implementacion
 } // namespace open_mp

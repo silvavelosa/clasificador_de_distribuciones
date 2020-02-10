@@ -34,7 +34,8 @@ libsComponentesCompartidos = \
 	$(cmpCompartidos)/$(binOut)/componentes_compartidos.a
 secuencial = ../secuencial
 impSecuencial = $(secuencial)/implementacion
-libsSecuencial = $(secuencial)/$(binOut)/clasificador_de_distribuciones_secuencial.a
+libsSecuencial = \
+	$(secuencial)/$(binOut)/clasificador_de_distribuciones_secuencial.a
 
 testExe = $(binTest)/$(projectName)_test$(exeExt)
 binLib = $(binOut)/$(projectName).a
@@ -81,7 +82,8 @@ $(objOut)/%.o: implementacion/%.cc
 $(objOut)/analizador_de_datos_open_mp.o: \
 		implementacion/analizador_de_datos_open_mp.h \
 		$(cmpCompartidos)/entidades.h \
-		$(cmpCompartidos)/interfaces.h
+		$(cmpCompartidos)/interfaces.h \
+		$(secuencial)/implementacion/analizador_de_datos_secuencial.h
 
 $(objOut)/manejador_de_archivos_open_mp.o: \
 		implementacion/manejador_de_archivos_open_mp.h \
